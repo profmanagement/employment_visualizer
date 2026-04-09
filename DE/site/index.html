@@ -1,0 +1,972 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DE Sozialwesen – Beschäftigungsvisualisierung</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --bg: #0a0a0f;
+  --bg2: #12121a;
+  --fg: #e0e0e8;
+  --fg2: #888894;
+}
+
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+}
+
+#wrapper {
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+  padding-bottom: 250px;
+}
+
+#header { padding: 20px 28px 16px; flex-shrink: 0; }
+
+.intro { margin-bottom: 18px; }
+.intro h1 {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.intro h1 a {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--fg2);
+  text-decoration: none;
+}
+.intro h1 a:hover { text-decoration: underline; }
+.intro p {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--fg2);
+  margin-bottom: 8px;
+}
+.intro a { color: var(--fg2); }
+.intro strong, .intro b { color: var(--fg); font-weight: 600; }
+
+.no-data-banner {
+  background: rgba(200,120,30,0.12);
+  border: 1px solid rgba(200,120,30,0.3);
+  border-radius: 6px;
+  padding: 12px 16px;
+  font-size: 13px;
+  color: #d4882a;
+  margin-bottom: 16px;
+  line-height: 1.5;
+}
+.no-data-banner code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  background: rgba(255,255,255,0.06);
+  padding: 1px 5px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.stats-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px 28px;
+  align-items: flex-start;
+  margin-bottom: 12px;
+}
+.stat-section { display: flex; flex-direction: column; gap: 5px; }
+.stat-section h3 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg2);
+}
+.stat-big { font-size: 32px; font-weight: 700; letter-spacing: -0.03em; line-height: 1; }
+.stat-label { font-size: 11px; color: var(--fg2); }
+
+.tier-bar { display: flex; flex-direction: column; gap: 3px; }
+.tier-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.tier-color { width: 10px; height: 10px; border-radius: 2px; flex-shrink: 0; }
+.tier-name { flex: 1; color: var(--fg2); white-space: nowrap; }
+.tier-jobs { text-align: right; white-space: nowrap; }
+.tier-pct { text-align: right; width: 30px; color: var(--fg2); font-size: 11px; }
+
+.histogram { display: flex; align-items: flex-end; gap: 2px; height: 54px; }
+.histogram .bar { flex: 1; border-radius: 1px 1px 0 0; min-height: 1px; }
+.hist-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--fg2); margin-top: 2px; }
+
+.hbar-chart { display: flex; flex-direction: column; gap: 3px; }
+.hbar-row { display: flex; align-items: center; gap: 6px; font-size: 12px; }
+.hbar-label { width: 72px; flex-shrink: 0; color: var(--fg2); font-size: 11px; text-align: right; }
+.hbar-track { flex: 1; height: 12px; background: rgba(255,255,255,0.04); border-radius: 2px; overflow: hidden; min-width: 36px; }
+.hbar-fill { height: 100%; border-radius: 2px; }
+.hbar-val { width: 36px; flex-shrink: 0; font-size: 11px; color: var(--fg); text-align: right; }
+
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: wrap;
+  margin-bottom: 14px;
+}
+.color-toggle { display: flex; gap: 4px; }
+.color-toggle button {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.color-toggle button.active {
+  background: rgba(255,255,255,0.08);
+  color: var(--fg);
+  border-color: rgba(255,255,255,0.2);
+}
+.color-toggle button:hover:not(.active) { background: rgba(255,255,255,0.04); }
+
+.view-toggle { display: flex; gap: 4px; }
+.view-toggle button {
+  padding: 5px 12px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  background: transparent;
+  color: var(--fg2);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.view-toggle button.active {
+  background: rgba(255,255,255,0.06);
+  color: var(--fg);
+  border-color: rgba(255,255,255,0.15);
+}
+
+.gradient-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  color: var(--fg2);
+}
+.gradient-legend canvas { border-radius: 2px; }
+
+canvas#canvas { display: block; cursor: default; }
+
+#tooltip {
+  position: fixed;
+  pointer-events: none;
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 360px;
+  opacity: 0;
+  transition: opacity 0.12s;
+  z-index: 20;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.6);
+}
+#tooltip.visible { opacity: 1; }
+#tooltip .tt-title { font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #fff; }
+#tooltip .tt-metric { font-size: 12px; margin-bottom: 8px; }
+#tooltip .tt-stats { display: grid; grid-template-columns: auto auto; gap: 2px 12px; font-size: 12px; }
+#tooltip .tt-stats .label { color: var(--fg2); }
+#tooltip .tt-stats .value { color: var(--fg); text-align: right; }
+#tooltip .tt-rationale {
+  font-size: 11px;
+  color: var(--fg2);
+  margin-top: 8px;
+  line-height: 1.4;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div id="wrapper">
+<div id="header">
+  <div class="intro">
+    <h1>Soziale Dienstleistungen – Beschäftigungsvisualisierung (DE) <a href="https://github.com/karpathy/jobs">GitHub</a></h1>
+    <p>
+      Dieses Tool visualisiert Beschäftigungsdaten der
+      <a href="https://statistik.arbeitsagentur.de/" target="_blank">Bundesagentur für Arbeit</a>
+      für <b>soziale Dienstleistungsberufe</b> (KldB 2010 Berufshauptgruppen 81 und 83)
+      sowie Wirtschaftszweige des Sozialwesens (WZ 2008 Abteilungen 87/88).
+      Rechteckgröße = <b>SVB-Bestand</b> (sozialversicherungspflichtig Beschäftigte).
+      <b>Farbe</b> zeigt die gewählte Metrik.
+      Stichtag: 30. Juni. Datenreihe ab 2013 (KldB 2010).
+    </p>
+    <p>
+      <b>KI-Expositionsscore:</b> Adaptiert aus dem BLS Occupational Outlook Handbook
+      (via LLM-Scoring analog <a href="../site/index.html">US-Visualisierung</a>).
+      Skala 0–10: 0 = kaum KI-Exposition, 10 = vollständig digital/automatisierbar.
+      Soziale und pflegerische Berufe liegen typischerweise im Bereich 2–5, da
+      körperliche Präsenz und Beziehungsarbeit einen natürlichen Schutz bieten.
+    </p>
+  </div>
+
+  <div id="noBanner" class="no-data-banner" style="display:none">
+    <b>Keine Daten geladen.</b> Bitte zuerst ausführen:<br>
+    <code>uv run python DE/scrape_ba.py</code> →
+    <code>uv run python DE/parse_ba.py</code> →
+    <code>uv run python DE/build_site_data.py</code><br>
+    Danach <code>DE/site/data.json</code> prüfen und diese Seite neu laden.
+    In der Zwischenzeit werden Demo-Daten angezeigt.
+  </div>
+
+  <div class="controls-row">
+    <div class="stat-section">
+      <h3>Ansicht</h3>
+      <div class="view-toggle" id="viewToggle">
+        <button data-view="kldb" class="active">KldB (Berufe)</button>
+        <button data-view="wz">WZ (Branchen)</button>
+        <button data-view="all">Gesamt</button>
+      </div>
+    </div>
+    <div class="stat-section">
+      <h3>Berufsbereich (KldB)</h3>
+      <div class="view-toggle" id="sectorToggle">
+        <button data-sector="all" class="active">Alle</button>
+        <button data-sector="soziales">Soziales (81)</button>
+        <button data-sector="bildung">Bildung (82)</button>
+        <button data-sector="pflege">Pflege (83)</button>
+        <button data-sector="therapie">Therapie (84)</button>
+        <button data-sector="medizin">Medizin (85–88)</button>
+      </div>
+    </div>
+    <div class="stat-section">
+      <h3>Einfärbung</h3>
+      <div class="color-toggle" id="colorToggle">
+        <button data-mode="wachstum" class="active">Wachstum 2013–heute</button>
+        <button data-mode="frauen">Frauenanteil</button>
+        <button data-mode="teilzeit">Teilzeitquote</button>
+        <button data-mode="exposure">KI-Exposition</button>
+      </div>
+    </div>
+    <div class="gradient-legend">
+      <span id="legendLow"></span>
+      <canvas id="gradientLegend" width="80" height="8"></canvas>
+      <span id="legendHigh"></span>
+    </div>
+  </div>
+
+  <div class="stats-row">
+    <div class="stat-section">
+      <h3>SVB gesamt</h3>
+      <div class="stat-big" id="statTotal">&mdash;</div>
+    </div>
+    <div class="stat-section" id="block2"></div>
+    <div class="stat-section" id="block3"></div>
+    <div class="stat-section" id="block4"></div>
+    <div class="stat-section" id="block5"></div>
+    <div class="stat-section" id="block6"></div>
+  </div>
+</div>
+
+<canvas id="canvas"></canvas>
+</div>
+
+<div id="tooltip">
+  <div class="tt-title"></div>
+  <div class="tt-metric"></div>
+  <div class="tt-stats"></div>
+  <div class="tt-rationale"></div>
+</div>
+
+<script>
+// ── Farbfunktionen ──────────────────────────────────────────────────────
+
+let colorMode = "wachstum";
+let viewMode  = "kldb";
+
+function boostContrast(t) {
+  const c = (t - 0.5) * 2;
+  const b = Math.sign(c) * Math.pow(Math.abs(c), 0.55);
+  return b / 2 + 0.5;
+}
+
+function greenRedCSS(t, alpha) {
+  t = boostContrast(Math.max(0, Math.min(1, t)));
+  let r, g, b;
+  if (t < 0.5) {
+    const s = t / 0.5;
+    r = Math.round(30 + s * 200);
+    g = Math.round(180 - s * 20);
+    b = Math.round(40 - s * 20);
+  } else {
+    const s = (t - 0.5) / 0.5;
+    r = Math.round(230 + s * 25);
+    g = Math.round(160 - s * 130);
+    b = Math.round(20 - s * 5);
+  }
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// Wachstum: -30% → rot, +30% → grün (grüner = mehr Wachstum)
+function wachstumColor(pct, alpha) {
+  if (pct == null) return `rgba(128,128,128,${alpha})`;
+  const t = 1 - Math.max(0, Math.min(1, (pct + 30) / 60));
+  return greenRedCSS(t, alpha);
+}
+
+// Frauenanteil: 0% → blau/neutral, 100% → grün
+function frauenColor(v, alpha) {
+  if (v == null) return `rgba(128,128,128,${alpha})`;
+  const t = boostContrast(Math.max(0, Math.min(1, v)));
+  const r = Math.round(30 + (1 - t) * 100);
+  const g = Math.round(100 + t * 130);
+  const b = Math.round(200 - t * 160);
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
+// Teilzeit: 0% → grün, 100% → orange/rot
+function teilzeitColor(v, alpha) {
+  if (v == null) return `rgba(128,128,128,${alpha})`;
+  return greenRedCSS(v, alpha);
+}
+
+// KI-Exposition: 0 → grün, 10 → rot
+function exposureColor(v, alpha) {
+  if (v == null) return `rgba(128,128,128,${alpha})`;
+  return greenRedCSS(v / 10, alpha);
+}
+
+function tileColor(d, alpha) {
+  if (colorMode === "wachstum")  return wachstumColor(d.wachstum_gesamt_pct, alpha);
+  if (colorMode === "frauen")    return frauenColor(d.anteil_frauen, alpha);
+  if (colorMode === "teilzeit")  return teilzeitColor(d.anteil_teilzeit, alpha);
+  if (colorMode === "exposure")  return exposureColor(d.exposure, alpha);
+  return `rgba(128,128,128,${alpha})`;
+}
+
+function tileSubInfo(d) {
+  const svb = d.svb ? formatNumber(d.svb) + " SVB" : "";
+  if (colorMode === "wachstum")  return (d.wachstum_gesamt_pct != null ? (d.wachstum_gesamt_pct > 0 ? "+" : "") + d.wachstum_gesamt_pct.toFixed(1) + "% · " : "") + svb;
+  if (colorMode === "frauen")    return (d.anteil_frauen != null ? (d.anteil_frauen * 100).toFixed(0) + "% Frauen · " : "") + svb;
+  if (colorMode === "teilzeit")  return (d.anteil_teilzeit != null ? (d.anteil_teilzeit * 100).toFixed(0) + "% TZ · " : "") + svb;
+  if (colorMode === "exposure")  return (d.exposure != null ? d.exposure + "/10 KI · " : "") + svb;
+  return svb;
+}
+
+// ── Squarified Treemap ─────────────────────────────────────────────────
+
+function squarify(items, x, y, w, h) {
+  if (items.length === 0) return [];
+  if (items.length === 1) return [{ ...items[0], rx: x, ry: y, rw: w, rh: h }];
+  const total = items.reduce((s, d) => s + d.value, 0);
+  if (total === 0) return [];
+  const results = [];
+  let remaining = [...items], cx = x, cy = y, cw = w, ch = h;
+  while (remaining.length > 0) {
+    const remTotal = remaining.reduce((s, d) => s + d.value, 0);
+    const vertical = cw >= ch;
+    const side = vertical ? ch : cw;
+    let row = [remaining[0]], rowSum = remaining[0].value;
+    for (let i = 1; i < remaining.length; i++) {
+      const candidate = [...row, remaining[i]];
+      const candidateSum = rowSum + remaining[i].value;
+      if (worstAspect(candidate, candidateSum, side, remTotal, vertical ? cw : ch) <
+          worstAspect(row, rowSum, side, remTotal, vertical ? cw : ch)) {
+        row = candidate; rowSum = candidateSum;
+      } else break;
+    }
+    const rowFraction = rowSum / remTotal;
+    const rowThickness = vertical ? cw * rowFraction : ch * rowFraction;
+    let offset = 0;
+    for (const item of row) {
+      const itemFraction = item.value / rowSum;
+      const itemLength = side * itemFraction;
+      if (vertical) results.push({ ...item, rx: cx, ry: cy + offset, rw: rowThickness, rh: itemLength });
+      else results.push({ ...item, rx: cx + offset, ry: cy, rw: itemLength, rh: rowThickness });
+      offset += itemLength;
+    }
+    if (vertical) { cx += rowThickness; cw -= rowThickness; }
+    else { cy += rowThickness; ch -= rowThickness; }
+    remaining = remaining.slice(row.length);
+  }
+  return results;
+}
+
+function worstAspect(row, rowSum, side, totalArea, availableExtent) {
+  const rowExtent = availableExtent * (rowSum / totalArea);
+  if (rowExtent === 0) return Infinity;
+  let worst = 0;
+  for (const item of row) {
+    const itemLen = side * (item.value / rowSum);
+    if (itemLen === 0) continue;
+    const aspect = Math.max(rowExtent / itemLen, itemLen / rowExtent);
+    if (aspect > worst) worst = aspect;
+  }
+  return worst;
+}
+
+// ── Rendering ──────────────────────────────────────────────────────────
+
+let allData = [];   // alle Nodes aus data.json
+let data = [];      // gefiltert nach viewMode + sectorFilter
+let rects = [];
+let hovered = null;
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+const dpr = window.devicePixelRatio || 1;
+const MARGIN = 12, GAP = 1.5;
+
+let sectorFilter = "all";
+
+const SECTOR_PREFIXES = {
+  soziales: ["81"],
+  bildung:  ["82"],
+  pflege:   ["83"],
+  therapie: ["84"],
+  medizin:  ["85", "86", "87", "88"],
+};
+
+function filteredData() {
+  let base = viewMode === "all" ? allData : allData.filter(d => d.category === viewMode);
+  if (sectorFilter !== "all") {
+    const prefixes = SECTOR_PREFIXES[sectorFilter] || [];
+    base = base.filter(d => prefixes.some(p => d.id.startsWith(p)));
+  }
+  return base;
+}
+
+function layout() {
+  data = filteredData().filter(d => d.svb && d.svb > 0);
+
+  const wrapper = document.getElementById("wrapper");
+  const w = wrapper.clientWidth;
+  const h = Math.round(w * 3 / 5);
+  canvas.width  = w * dpr; canvas.height = h * dpr;
+  canvas.style.width  = w + "px"; canvas.style.height = h + "px";
+
+  const tx = MARGIN, ty = MARGIN, tw = w - MARGIN * 2, th = h - MARGIN * 2;
+
+  // Gruppierung nach Kategorie (kldb / wz)
+  const byCat = {};
+  for (const d of data) {
+    const cat = d.category || "other";
+    if (!byCat[cat]) byCat[cat] = [];
+    byCat[cat].push(d);
+  }
+
+  const categories = Object.keys(byCat).map(cat => ({
+    cat,
+    items: byCat[cat].sort((a, b) => (b.svb || 0) - (a.svb || 0)),
+    value: byCat[cat].reduce((s, d) => s + (d.svb || 1), 0),
+  })).sort((a, b) => b.value - a.value);
+
+  const catRects = squarify(categories, tx, ty, tw, th);
+  rects = [];
+  for (const cr of catRects) {
+    const items = cr.items.map(d => ({ ...d, value: d.svb || 1 }));
+    const inner = squarify(items, cr.rx + GAP, cr.ry + GAP, cr.rw - GAP * 2, cr.rh - GAP * 2);
+    for (const ir of inner) rects.push(ir);
+  }
+}
+
+function draw() {
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.fillStyle = "#0a0a0f";
+  ctx.fillRect(0, 0, canvas.width / dpr, canvas.height / dpr);
+  for (const r of rects) {
+    const isHov = r === hovered;
+    const g = GAP / 2;
+    const rx = r.rx + g, ry = r.ry + g, rw = r.rw - g * 2, rh = r.rh - g * 2;
+    if (rw <= 0 || rh <= 0) continue;
+    ctx.fillStyle = tileColor(r, isHov ? 0.85 : 0.55);
+    ctx.fillRect(rx, ry, rw, rh);
+    if (isHov) { ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.strokeRect(rx, ry, rw, rh); }
+    if (rw > 48 && rh > 18) {
+      ctx.save(); ctx.beginPath(); ctx.rect(rx + 4, ry + 2, rw - 8, rh - 4); ctx.clip();
+      const fontSize = Math.min(13, Math.max(9, Math.min(rw / 8, rh / 3)));
+      ctx.font = `500 ${fontSize}px -apple-system, system-ui, sans-serif`;
+      ctx.fillStyle = isHov ? "#fff" : "rgba(255,255,255,0.88)";
+      ctx.textBaseline = "top";
+      ctx.fillText(r.label, rx + 5, ry + 4);
+      if (rh > 34 && rw > 56) {
+        ctx.font = `400 ${Math.max(8, fontSize - 2)}px -apple-system, system-ui, sans-serif`;
+        ctx.fillStyle = "rgba(255,255,255,0.5)";
+        ctx.fillText(tileSubInfo(r), rx + 5, ry + 4 + fontSize + 2);
+      }
+      ctx.restore();
+    }
+  }
+}
+
+function hitTest(mx, my) {
+  const rect = canvas.getBoundingClientRect();
+  const cx = mx - rect.left, cy = my - rect.top;
+  for (let i = rects.length - 1; i >= 0; i--) {
+    const r = rects[i];
+    if (cx >= r.rx && cx < r.rx + r.rw && cy >= r.ry && cy < r.ry + r.rh) return r;
+  }
+  return null;
+}
+
+// ── Formatierung ───────────────────────────────────────────────────────
+
+function formatNumber(n) {
+  if (n == null) return "—";
+  if (n >= 1e6) return (n / 1e6).toFixed(2).replace(".", ",") + " Mio.";
+  if (n >= 1e3) return (n / 1e3).toFixed(0) + "T";
+  return n.toLocaleString("de-DE");
+}
+
+function pct(v, digits = 1) {
+  if (v == null) return "—";
+  return (v * 100).toFixed(digits).replace(".", ",") + "%";
+}
+
+function growth(v) {
+  if (v == null) return "—";
+  return (v > 0 ? "+" : "") + v.toFixed(1).replace(".", ",") + "%";
+}
+
+// ── Tooltip ────────────────────────────────────────────────────────────
+
+function metricHighlight(d) {
+  if (colorMode === "wachstum") {
+    const v = d.wachstum_gesamt_pct;
+    if (v == null) return "";
+    const color = wachstumColor(v, 1);
+    return `<span style="color:${color};font-weight:600;">Wachstum: ${growth(v)}</span>` +
+      (d.cagr_pct != null ? ` <span style="color:var(--fg2);">(${(d.cagr_pct > 0 ? "+" : "") + d.cagr_pct.toFixed(2).replace(".", ",")}% p.a.)</span>` : "") +
+      `<div style="margin-top:3px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">` +
+      `<div style="height:100%;width:${Math.min(100, Math.max(0, (v + 30) / 60 * 100))}%;background:${color};border-radius:2px;"></div></div>`;
+  }
+  if (colorMode === "frauen") {
+    const v = d.anteil_frauen;
+    if (v == null) return "";
+    const color = frauenColor(v, 1);
+    return `<span style="color:${color};font-weight:600;">Frauenanteil: ${pct(v)}</span>` +
+      `<div style="margin-top:3px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">` +
+      `<div style="height:100%;width:${Math.min(100, v * 100)}%;background:${color};border-radius:2px;"></div></div>`;
+  }
+  if (colorMode === "teilzeit") {
+    const v = d.anteil_teilzeit;
+    if (v == null) return "";
+    const color = teilzeitColor(v, 1);
+    return `<span style="color:${color};font-weight:600;">Teilzeitquote: ${pct(v)}</span>` +
+      `<div style="margin-top:3px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">` +
+      `<div style="height:100%;width:${Math.min(100, v * 100)}%;background:${color};border-radius:2px;"></div></div>`;
+  }
+  if (colorMode === "exposure") {
+    const v = d.exposure;
+    if (v == null) return "";
+    const color = exposureColor(v, 1);
+    return `<span style="color:${color};font-weight:600;">KI-Exposition: ${v}/10</span>` +
+      (d.exposure_bls_title ? ` <span style="color:var(--fg2);">(BLS: ${d.exposure_bls_title})</span>` : "") +
+      `<div style="margin-top:3px;height:4px;background:rgba(255,255,255,0.08);border-radius:2px;">` +
+      `<div style="height:100%;width:${v * 10}%;background:${color};border-radius:2px;"></div></div>`;
+  }
+  return "";
+}
+
+function showTooltip(d, mx, my) {
+  const tt = document.getElementById("tooltip");
+  tt.querySelector(".tt-title").textContent = d.label;
+  tt.querySelector(".tt-metric").innerHTML = metricHighlight(d);
+  tt.querySelector(".tt-stats").innerHTML = `
+    <span class="label">SVB (${d.svb_year || "—"})</span><span class="value">${formatNumber(d.svb)}</span>
+    <span class="label">Frauenanteil</span><span class="value">${pct(d.anteil_frauen)}</span>
+    <span class="label">Teilzeitquote</span><span class="value">${pct(d.anteil_teilzeit)}</span>
+    <span class="label">Geringfügig</span><span class="value">${pct(d.anteil_geringfuegig)}</span>
+    <span class="label">Wachstum ges.</span><span class="value">${growth(d.wachstum_gesamt_pct)}</span>
+    <span class="label">CAGR p.a.</span><span class="value">${growth(d.cagr_pct)}</span>`;
+  const showRat = colorMode === "exposure" && d.exposure_rationale;
+  tt.querySelector(".tt-rationale").textContent = showRat ? d.exposure_rationale : "";
+  tt.querySelector(".tt-rationale").style.display = showRat ? "" : "none";
+  let tx = mx + 16, ty = my - 16;
+  if (tx + 380 > window.innerWidth) tx = mx - 396;
+  if (ty < 10) ty = my + 16;
+  if (ty + 260 > window.innerHeight) ty = my - 260;
+  tt.style.left = tx + "px"; tt.style.top = ty + "px";
+  tt.classList.add("visible");
+}
+function hideTooltip() { document.getElementById("tooltip").classList.remove("visible"); }
+
+// ── Statistik-Blöcke ───────────────────────────────────────────────────
+
+function renderTiers(tiers, total) {
+  return tiers.map(t => `<div class="tier-row">
+    <div class="tier-color" style="background:${t.color}"></div>
+    <span class="tier-name">${t.label}</span>
+    <span class="tier-jobs">${formatNumber(t.jobs)}</span>
+    <span class="tier-pct">${total > 0 ? (t.jobs / total * 100).toFixed(0) : 0}%</span>
+  </div>`).join("");
+}
+
+function renderHbars(items) {
+  return items.map(it => `<div class="hbar-row">
+    <span class="hbar-label">${it.label}</span>
+    <div class="hbar-track"><div class="hbar-fill" style="width:${it.pct}%;background:${it.color}"></div></div>
+    <span class="hbar-val">${it.val}</span>
+  </div>`).join("");
+}
+
+function updateStats() {
+  const totalSVB = data.reduce((s, d) => s + (d.svb || 0), 0);
+  document.getElementById("statTotal").textContent = formatNumber(totalSVB);
+
+  if (colorMode === "wachstum") updateWachstumStats(totalSVB);
+  else if (colorMode === "frauen") updateFrauenStats(totalSVB);
+  else if (colorMode === "teilzeit") updateTeilzeitStats(totalSVB);
+  else updateExposureStats(totalSVB);
+}
+
+function updateWachstumStats(total) {
+  let wS = 0, wC = 0;
+  for (const d of data) { if (d.wachstum_gesamt_pct != null && d.svb) { wS += d.wachstum_gesamt_pct * d.svb; wC += d.svb; } }
+  const avg = wC > 0 ? wS / wC : 0;
+  document.getElementById("block2").innerHTML = `<h3>Ø Wachstum</h3>
+    <div class="stat-big"><span style="color:${wachstumColor(avg, 1)}">${growth(avg)}</span></div>
+    <div class="stat-label">beschäftigungsgewichtet</div>`;
+
+  // Histogram
+  const buckets = [
+    { lo: -Infinity, hi: -10, mid: -20 },
+    { lo: -10, hi: 0, mid: -5 },
+    { lo: 0, hi: 10, mid: 5 },
+    { lo: 10, hi: 25, mid: 17 },
+    { lo: 25, hi: Infinity, mid: 35 },
+  ];
+  const hist = buckets.map(() => 0);
+  for (const d of data) {
+    if (d.wachstum_gesamt_pct != null && d.svb) {
+      const i = buckets.findIndex(b => d.wachstum_gesamt_pct >= b.lo && d.wachstum_gesamt_pct < b.hi);
+      if (i >= 0) hist[i] += d.svb;
+    }
+  }
+  const maxH = Math.max(...hist, 1);
+  document.getElementById("block3").innerHTML = `<h3>SVB nach Wachstum</h3>
+    <div class="histogram">${hist.map((c, i) => `<div class="bar" style="height:${Math.max(2, c / maxH * 100)}%;background:${wachstumColor(buckets[i].mid, 0.7)}"></div>`).join("")}</div>
+    <div class="hist-labels"><span>&lt;-10%</span><span>0%</span><span>25%+</span></div>`;
+
+  const tiers = [
+    { label: "Schrumpfend (<0%)", min: -Infinity, max: 0 },
+    { label: "Geringes Wachstum (0–15%)", min: 0, max: 15 },
+    { label: "Starkes Wachstum (>15%)", min: 15, max: Infinity },
+  ].map(t => {
+    let jobs = 0;
+    for (const d of data) {
+      if (d.wachstum_gesamt_pct != null && d.svb && d.wachstum_gesamt_pct >= t.min && d.wachstum_gesamt_pct < t.max) jobs += d.svb;
+    }
+    const mid = t.min === -Infinity ? -15 : t.max === Infinity ? 30 : (t.min + t.max) / 2;
+    return { ...t, jobs, color: wachstumColor(mid, 1) };
+  });
+  document.getElementById("block4").innerHTML = `<h3>Wachstumsstufen</h3><div class="tier-bar">${renderTiers(tiers, total)}</div>`;
+
+  document.getElementById("block5").innerHTML = "";
+  document.getElementById("block6").innerHTML = "";
+}
+
+function updateFrauenStats(total) {
+  let wS = 0, wC = 0;
+  for (const d of data) { if (d.anteil_frauen != null && d.svb) { wS += d.anteil_frauen * d.svb; wC += d.svb; } }
+  const avg = wC > 0 ? wS / wC : 0;
+  document.getElementById("block2").innerHTML = `<h3>Ø Frauenanteil</h3>
+    <div class="stat-big"><span style="color:${frauenColor(avg, 1)}">${pct(avg, 0)}</span></div>
+    <div class="stat-label">beschäftigungsgewichtet</div>`;
+
+  const buckets = [0, 0.2, 0.4, 0.6, 0.8, 1.01];
+  const hist = Array(buckets.length - 1).fill(0);
+  for (const d of data) {
+    if (d.anteil_frauen != null && d.svb) {
+      const i = buckets.findIndex((b, idx) => idx > 0 && d.anteil_frauen < b) - 1;
+      if (i >= 0 && i < hist.length) hist[i] += d.svb;
+    }
+  }
+  const maxH = Math.max(...hist, 1);
+  document.getElementById("block3").innerHTML = `<h3>SVB nach Frauenanteil</h3>
+    <div class="histogram">${hist.map((c, i) => `<div class="bar" style="height:${Math.max(2, c / maxH * 100)}%;background:${frauenColor((buckets[i] + buckets[i + 1]) / 2, 0.7)}"></div>`).join("")}</div>
+    <div class="hist-labels"><span>0%</span><span>50%</span><span>100%</span></div>`;
+
+  // Rangliste
+  const sorted = [...data].filter(d => d.anteil_frauen != null).sort((a, b) => b.anteil_frauen - a.anteil_frauen);
+  document.getElementById("block4").innerHTML = `<h3>Frauenanteil (Berufe)</h3><div class="hbar-chart">${renderHbars(sorted.slice(0, 5).map(d => ({
+    label: d.label.split(",")[0].substring(0, 14),
+    val: pct(d.anteil_frauen, 0),
+    pct: d.anteil_frauen * 100,
+    color: frauenColor(d.anteil_frauen, 0.8),
+  })))}</div>`;
+
+  document.getElementById("block5").innerHTML = "";
+  document.getElementById("block6").innerHTML = "";
+}
+
+function updateTeilzeitStats(total) {
+  let wS = 0, wC = 0;
+  for (const d of data) { if (d.anteil_teilzeit != null && d.svb) { wS += d.anteil_teilzeit * d.svb; wC += d.svb; } }
+  const avg = wC > 0 ? wS / wC : 0;
+  document.getElementById("block2").innerHTML = `<h3>Ø Teilzeitquote</h3>
+    <div class="stat-big"><span style="color:${teilzeitColor(avg, 1)}">${pct(avg, 0)}</span></div>
+    <div class="stat-label">beschäftigungsgewichtet</div>`;
+
+  const buckets = [0, 0.2, 0.35, 0.5, 0.65, 1.01];
+  const hist = Array(buckets.length - 1).fill(0);
+  for (const d of data) {
+    if (d.anteil_teilzeit != null && d.svb) {
+      const i = buckets.findIndex((b, idx) => idx > 0 && d.anteil_teilzeit < b) - 1;
+      if (i >= 0 && i < hist.length) hist[i] += d.svb;
+    }
+  }
+  const maxH = Math.max(...hist, 1);
+  document.getElementById("block3").innerHTML = `<h3>SVB nach Teilzeitquote</h3>
+    <div class="histogram">${hist.map((c, i) => `<div class="bar" style="height:${Math.max(2, c / maxH * 100)}%;background:${teilzeitColor((buckets[i] + buckets[i + 1]) / 2, 0.7)}"></div>`).join("")}</div>
+    <div class="hist-labels"><span>0%</span><span>35%</span><span>65%+</span></div>`;
+
+  const sorted = [...data].filter(d => d.anteil_teilzeit != null).sort((a, b) => b.anteil_teilzeit - a.anteil_teilzeit);
+  document.getElementById("block4").innerHTML = `<h3>Teilzeitquote (Berufe)</h3><div class="hbar-chart">${renderHbars(sorted.slice(0, 5).map(d => ({
+    label: d.label.split(",")[0].substring(0, 14),
+    val: pct(d.anteil_teilzeit, 0),
+    pct: d.anteil_teilzeit * 100,
+    color: teilzeitColor(d.anteil_teilzeit, 0.8),
+  })))}</div>`;
+
+  document.getElementById("block5").innerHTML = "";
+  document.getElementById("block6").innerHTML = "";
+}
+
+function updateExposureStats(total) {
+  let wS = 0, wC = 0;
+  for (const d of data) { if (d.exposure != null && d.svb) { wS += d.exposure * d.svb; wC += d.svb; } }
+  const avg = wC > 0 ? wS / wC : 0;
+  document.getElementById("block2").innerHTML = `<h3>Ø KI-Exposition</h3>
+    <div class="stat-big"><span style="color:${exposureColor(avg, 1)}">${avg.toFixed(1)}/10</span></div>
+    <div class="stat-label">beschäftigungsgewichtet</div>`;
+
+  const hist = Array(10).fill(0);
+  for (const d of data) {
+    if (d.exposure != null && d.svb) {
+      const i = Math.min(9, Math.max(0, Math.floor(d.exposure) - 1));
+      hist[i] += d.svb;
+    }
+  }
+  const maxH = Math.max(...hist, 1);
+  document.getElementById("block3").innerHTML = `<h3>SVB nach KI-Score</h3>
+    <div class="histogram">${hist.map((c, i) => `<div class="bar" style="height:${Math.max(2, c / maxH * 100)}%;background:${exposureColor(i + 1, 0.7)}"></div>`).join("")}</div>
+    <div class="hist-labels"><span>1</span><span>5</span><span>10</span></div>`;
+
+  const tiers = [
+    { label: "Gering (0–3)", min: 0, max: 3 },
+    { label: "Mittel (4–6)", min: 4, max: 6 },
+    { label: "Hoch (7–10)", min: 7, max: 10 },
+  ].map(t => {
+    let jobs = 0;
+    for (const d of data) {
+      if (d.exposure != null && d.svb && d.exposure >= t.min && d.exposure <= t.max) jobs += d.svb;
+    }
+    return { ...t, jobs, color: exposureColor((t.min + t.max) / 2, 1) };
+  });
+  document.getElementById("block4").innerHTML = `<h3>Expositionsstufen</h3><div class="tier-bar">${renderTiers(tiers, total)}</div>`;
+
+  document.getElementById("block5").innerHTML = "";
+  document.getElementById("block6").innerHTML = "";
+}
+
+// ── Legende ────────────────────────────────────────────────────────────
+
+function updateLegend() {
+  const legends = {
+    wachstum:  { low: "Schrumpfend", high: "Wachsend" },
+    frauen:    { low: "Männerdominiert", high: "Frauendominiert" },
+    teilzeit:  { low: "Vollzeit", high: "Teilzeit" },
+    exposure:  { low: "Geringe KI-Exp.", high: "Hohe KI-Exp." },
+  };
+  const l = legends[colorMode] || { low: "", high: "" };
+  document.getElementById("legendLow").textContent  = l.low;
+  document.getElementById("legendHigh").textContent = l.high;
+
+  const gc = document.getElementById("gradientLegend").getContext("2d");
+  const grad = gc.createLinearGradient(0, 0, 80, 0);
+  for (let i = 0; i <= 10; i++) {
+    const t = i / 10;
+    let color;
+    if (colorMode === "wachstum")  color = wachstumColor(t * 60 - 30, 0.9);
+    else if (colorMode === "frauen") color = frauenColor(t, 0.9);
+    else if (colorMode === "teilzeit") color = teilzeitColor(t, 0.9);
+    else color = exposureColor(t * 10, 0.9);
+    grad.addColorStop(t, color);
+  }
+  gc.fillStyle = grad;
+  gc.fillRect(0, 0, 80, 8);
+}
+
+// ── Events ─────────────────────────────────────────────────────────────
+
+canvas.addEventListener("mousemove", e => {
+  const hit = hitTest(e.clientX, e.clientY);
+  if (hit !== hovered) { hovered = hit; draw(); }
+  if (hit) showTooltip(hit, e.clientX, e.clientY);
+  else hideTooltip();
+});
+canvas.addEventListener("mouseleave", () => { hovered = null; draw(); hideTooltip(); });
+
+document.getElementById("colorToggle").addEventListener("click", e => {
+  const btn = e.target.closest("[data-mode]");
+  if (!btn) return;
+  colorMode = btn.dataset.mode;
+  document.querySelectorAll("#colorToggle button").forEach(b => b.classList.toggle("active", b === btn));
+  updateLegend();
+  draw();
+  updateStats();
+});
+
+document.getElementById("viewToggle").addEventListener("click", e => {
+  const btn = e.target.closest("[data-view]");
+  if (!btn) return;
+  viewMode = btn.dataset.view;
+  document.querySelectorAll("#viewToggle button").forEach(b => b.classList.toggle("active", b === btn));
+  layout();
+  draw();
+  updateStats();
+});
+
+document.getElementById("sectorToggle").addEventListener("click", e => {
+  const btn = e.target.closest("[data-sector]");
+  if (!btn) return;
+  sectorFilter = btn.dataset.sector;
+  document.querySelectorAll("#sectorToggle button").forEach(b => b.classList.toggle("active", b === btn));
+  layout();
+  draw();
+  updateStats();
+});
+
+window.addEventListener("resize", () => { layout(); draw(); });
+
+// ── Demo-Daten (wenn keine echten Daten vorhanden) ─────────────────────
+
+function makeDemoData() {
+  const D = "Demo-Daten. Echte Daten nach Ausführen der Scraper verfügbar.";
+  return [
+    // KldB 81 – Soziales
+    { id: "811", label: "Kinderbetreuung", category: "kldb", svb: 420000, svb_year: 2023,
+      anteil_frauen: 0.96, anteil_teilzeit: 0.58, anteil_geringfuegig: 0.07,
+      wachstum_gesamt_pct: 38.2, cagr_pct: 3.1, exposure: 2, exposure_bls_title: "Childcare workers", exposure_rationale: D },
+    { id: "812", label: "Sozialarbeit, Sozialpäd.", category: "kldb", svb: 280000, svb_year: 2023,
+      anteil_frauen: 0.74, anteil_teilzeit: 0.44, anteil_geringfuegig: 0.05,
+      wachstum_gesamt_pct: 22.5, cagr_pct: 2.1, exposure: 4, exposure_bls_title: "Social workers", exposure_rationale: D },
+    { id: "813", label: "Heilerziehungspflege", category: "kldb", svb: 195000, svb_year: 2023,
+      anteil_frauen: 0.68, anteil_teilzeit: 0.41, anteil_geringfuegig: 0.04,
+      wachstum_gesamt_pct: 45.1, cagr_pct: 3.8, exposure: 5, exposure_bls_title: "Special education teachers", exposure_rationale: D },
+    // KldB 82 – Bildung
+    { id: "821", label: "Lehrtätigkeit allgemeinb.", category: "kldb", svb: 710000, svb_year: 2023,
+      anteil_frauen: 0.72, anteil_teilzeit: 0.39, anteil_geringfuegig: 0.02,
+      wachstum_gesamt_pct: 12.4, cagr_pct: 1.2, exposure: 7, exposure_bls_title: "High school teachers", exposure_rationale: D },
+    { id: "822", label: "Lehrtätigkeit berufsb.", category: "kldb", svb: 210000, svb_year: 2023,
+      anteil_frauen: 0.52, anteil_teilzeit: 0.31, anteil_geringfuegig: 0.02,
+      wachstum_gesamt_pct: 8.3, cagr_pct: 0.8, exposure: 6, exposure_bls_title: "Middle school teachers", exposure_rationale: D },
+    { id: "823", label: "Hochschullehre", category: "kldb", svb: 195000, svb_year: 2023,
+      anteil_frauen: 0.44, anteil_teilzeit: 0.35, anteil_geringfuegig: 0.04,
+      wachstum_gesamt_pct: 28.0, cagr_pct: 2.6, exposure: 7, exposure_bls_title: "Postsecondary teachers", exposure_rationale: D },
+    { id: "824", label: "Außerschulische Bildung", category: "kldb", svb: 120000, svb_year: 2023,
+      anteil_frauen: 0.67, anteil_teilzeit: 0.52, anteil_geringfuegig: 0.11,
+      wachstum_gesamt_pct: 18.0, cagr_pct: 1.7, exposure: 3, exposure_bls_title: "Preschool teachers", exposure_rationale: D },
+    // KldB 83 – Pflege
+    { id: "831", label: "Krankenpflege", category: "kldb", svb: 820000, svb_year: 2023,
+      anteil_frauen: 0.81, anteil_teilzeit: 0.49, anteil_geringfuegig: 0.03,
+      wachstum_gesamt_pct: 18.3, cagr_pct: 1.8, exposure: 4, exposure_bls_title: "Registered nurses", exposure_rationale: D },
+    { id: "832", label: "Rettungsdienst", category: "kldb", svb: 65000, svb_year: 2023,
+      anteil_frauen: 0.22, anteil_teilzeit: 0.28, anteil_geringfuegig: 0.06,
+      wachstum_gesamt_pct: 31.0, cagr_pct: 2.8, exposure: 3, exposure_bls_title: "EMTs and paramedics", exposure_rationale: D },
+    { id: "833", label: "Geburtshilfe", category: "kldb", svb: 24000, svb_year: 2023,
+      anteil_frauen: 0.98, anteil_teilzeit: 0.55, anteil_geringfuegig: 0.02,
+      wachstum_gesamt_pct: 10.2, cagr_pct: 1.0, exposure: 5, exposure_bls_title: "Nurse midwives", exposure_rationale: D },
+    // KldB 84 – Therapie
+    { id: "841", label: "Physiotherapie", category: "kldb", svb: 155000, svb_year: 2023,
+      anteil_frauen: 0.63, anteil_teilzeit: 0.46, anteil_geringfuegig: 0.08,
+      wachstum_gesamt_pct: 24.6, cagr_pct: 2.3, exposure: 3, exposure_bls_title: "Physical therapists", exposure_rationale: D },
+    { id: "842", label: "Ergotherapie", category: "kldb", svb: 55000, svb_year: 2023,
+      anteil_frauen: 0.78, anteil_teilzeit: 0.51, anteil_geringfuegig: 0.05,
+      wachstum_gesamt_pct: 20.0, cagr_pct: 1.9, exposure: 3, exposure_bls_title: "Occupational therapists", exposure_rationale: D },
+    { id: "843", label: "Logopädie", category: "kldb", svb: 35000, svb_year: 2023,
+      anteil_frauen: 0.88, anteil_teilzeit: 0.53, anteil_geringfuegig: 0.06,
+      wachstum_gesamt_pct: 22.0, cagr_pct: 2.1, exposure: 3, exposure_bls_title: "Speech-language pathologists", exposure_rationale: D },
+    // KldB 85 – Medizin
+    { id: "851", label: "Humanmedizin (Ärzt*innen)", category: "kldb", svb: 390000, svb_year: 2023,
+      anteil_frauen: 0.50, anteil_teilzeit: 0.22, anteil_geringfuegig: 0.01,
+      wachstum_gesamt_pct: 16.8, cagr_pct: 1.6, exposure: 5, exposure_bls_title: "Physicians and surgeons", exposure_rationale: D },
+    { id: "852", label: "Zahnmedizin", category: "kldb", svb: 72000, svb_year: 2023,
+      anteil_frauen: 0.55, anteil_teilzeit: 0.29, anteil_geringfuegig: 0.01,
+      wachstum_gesamt_pct: 9.5, cagr_pct: 0.9, exposure: 3, exposure_bls_title: "Dentists", exposure_rationale: D },
+    // KldB 86 – Psychologie
+    { id: "861", label: "Psychologie, Psychotherapie", category: "kldb", svb: 62000, svb_year: 2023,
+      anteil_frauen: 0.72, anteil_teilzeit: 0.38, anteil_geringfuegig: 0.03,
+      wachstum_gesamt_pct: 32.0, cagr_pct: 2.9, exposure: 6, exposure_bls_title: "Psychologists", exposure_rationale: D },
+    // KldB 87 – Pharmazie
+    { id: "871", label: "Pharmazie, Apotheke", category: "kldb", svb: 58000, svb_year: 2023,
+      anteil_frauen: 0.78, anteil_teilzeit: 0.41, anteil_geringfuegig: 0.04,
+      wachstum_gesamt_pct: 5.2, cagr_pct: 0.5, exposure: 5, exposure_bls_title: "Pharmacists", exposure_rationale: D },
+    // WZ – Branchen
+    { id: "85.1", label: "Kindergärten, Grundschulen (WZ 85.1)", category: "wz", svb: 650000, svb_year: 2023,
+      anteil_frauen: 0.91, anteil_teilzeit: 0.55, anteil_geringfuegig: 0.06,
+      wachstum_gesamt_pct: 30.0, cagr_pct: 2.8, exposure: 3, exposure_bls_title: "Preschool teachers", exposure_rationale: D },
+    { id: "85.2", label: "Weiterführende Schulen (WZ 85.2)", category: "wz", svb: 490000, svb_year: 2023,
+      anteil_frauen: 0.63, anteil_teilzeit: 0.36, anteil_geringfuegig: 0.02,
+      wachstum_gesamt_pct: 9.8, cagr_pct: 0.9, exposure: 7, exposure_bls_title: "High school teachers", exposure_rationale: D },
+    { id: "85.3", label: "Hochschulen (WZ 85.3)", category: "wz", svb: 310000, svb_year: 2023,
+      anteil_frauen: 0.47, anteil_teilzeit: 0.33, anteil_geringfuegig: 0.03,
+      wachstum_gesamt_pct: 27.5, cagr_pct: 2.5, exposure: 7, exposure_bls_title: "Postsecondary teachers", exposure_rationale: D },
+    { id: "86.1", label: "Krankenhäuser (WZ 86.1)", category: "wz", svb: 1150000, svb_year: 2023,
+      anteil_frauen: 0.76, anteil_teilzeit: 0.44, anteil_geringfuegig: 0.02,
+      wachstum_gesamt_pct: 14.2, cagr_pct: 1.4, exposure: 4, exposure_bls_title: "Registered nurses", exposure_rationale: D },
+    { id: "86.2", label: "Arzt- u. Zahnarztpraxen (WZ 86.2)", category: "wz", svb: 680000, svb_year: 2023,
+      anteil_frauen: 0.74, anteil_teilzeit: 0.47, anteil_geringfuegig: 0.05,
+      wachstum_gesamt_pct: 17.0, cagr_pct: 1.6, exposure: 5, exposure_bls_title: "Physicians and surgeons", exposure_rationale: D },
+    { id: "87", label: "Heime (WZ 87)", category: "wz", svb: 680000, svb_year: 2023,
+      anteil_frauen: 0.83, anteil_teilzeit: 0.53, anteil_geringfuegig: 0.06,
+      wachstum_gesamt_pct: 14.5, cagr_pct: 1.4, exposure: 2, exposure_bls_title: "Nursing assistants", exposure_rationale: D },
+    { id: "88", label: "Sozialwesen (WZ 88)", category: "wz", svb: 520000, svb_year: 2023,
+      anteil_frauen: 0.77, anteil_teilzeit: 0.51, anteil_geringfuegig: 0.09,
+      wachstum_gesamt_pct: 26.8, cagr_pct: 2.5, exposure: 4, exposure_bls_title: "Social workers", exposure_rationale: D },
+  ];
+}
+
+// ── Laden ──────────────────────────────────────────────────────────────
+
+async function init() {
+  let loaded = false;
+  try {
+    const resp = await fetch("data.json");
+    if (resp.ok) {
+      const json = await resp.json();
+      const nodes = (json.nodes || []).filter(d => d.svb && d.svb > 0);
+      if (nodes.length > 0) {
+        allData = nodes;
+        loaded = true;
+      }
+    }
+  } catch (e) {
+    // kein data.json → Demo-Modus
+  }
+
+  if (!loaded) {
+    document.getElementById("noBanner").style.display = "";
+    allData = makeDemoData();
+  }
+
+  layout();
+  draw();
+  updateLegend();
+  updateStats();
+}
+
+init();
+</script>
+</body>
+</html>
