@@ -186,6 +186,18 @@ canvas#canvas { display: block; cursor: default; }
 #tooltip .tt-stats { display: grid; grid-template-columns: auto auto; gap: 2px 12px; font-size: 12px; }
 #tooltip .tt-stats .label { color: var(--fg2); }
 #tooltip .tt-stats .value { color: var(--fg); text-align: right; }
+#tooltip .tt-sparkline {
+  display: block;
+  margin: 8px 0 6px;
+  border-radius: 3px;
+}
+#tooltip .tt-sparkline-label {
+  font-size: 10px;
+  color: var(--fg2);
+  margin-bottom: 6px;
+  display: flex;
+  justify-content: space-between;
+}
 #tooltip .tt-rationale {
   font-size: 11px;
   color: var(--fg2);
@@ -194,6 +206,20 @@ canvas#canvas { display: block; cursor: default; }
   border-top: 1px solid rgba(255,255,255,0.06);
   padding-top: 8px;
 }
+
+#trendPanel {
+  display: none;
+  padding: 0 28px 20px;
+}
+#trendPanel h3 {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--fg2);
+  margin-bottom: 8px;
+}
+#trendCanvas { display: block; }
 </style>
 </head>
 <body>
@@ -279,11 +305,18 @@ canvas#canvas { display: block; cursor: default; }
 </div>
 
 <canvas id="canvas"></canvas>
+
+<div id="trendPanel">
+  <h3 id="trendTitle">SVB-Verlauf</h3>
+  <canvas id="trendCanvas"></canvas>
+</div>
 </div>
 
 <div id="tooltip">
   <div class="tt-title"></div>
   <div class="tt-metric"></div>
+  <div class="tt-sparkline-label"></div>
+  <canvas class="tt-sparkline" width="300" height="56"></canvas>
   <div class="tt-stats"></div>
   <div class="tt-rationale"></div>
 </div>
@@ -415,10 +448,150 @@ function worstAspect(row, rowSum, side, totalArea, availableExtent) {
   return worst;
 }
 
+// ── Zeitreihen-Zeichnung ──────────────────────────────────────────────
+
+function drawSparkline(canvas, series, color) {
+  const w = canvas.width, h = canvas.height;
+  const ctx2 = canvas.getContext("2d");
+  ctx2.clearRect(0, 0, w, h);
+  if (!series || series.length < 2) {
+    ctx2.fillStyle = "rgba(255,255,255,0.04)";
+    ctx2.fillRect(0, 0, w, h);
+    ctx2.fillStyle = "rgba(255,255,255,0.2)";
+    ctx2.font = "10px system-ui";
+    ctx2.textBaseline = "middle";
+    ctx2.fillText("keine Zeitreihendaten", 8, h / 2);
+    return;
+  }
+  const vals = series.map(d => d.svb);
+  const years = series.map(d => d.year);
+  const minV = Math.min(...vals), maxV = Math.max(...vals);
+  const pad = { t: 6, b: 18, l: 4, r: 4 };
+  const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
+  const range = maxV - minV || 1;
+
+  function px(i) { return pad.l + (i / (series.length - 1)) * cw; }
+  function py(v) { return pad.t + ch - ((v - minV) / range) * ch; }
+
+  // Füllfläche
+  ctx2.beginPath();
+  ctx2.moveTo(px(0), py(vals[0]));
+  for (let i = 1; i < series.length; i++) ctx2.lineTo(px(i), py(vals[i]));
+  ctx2.lineTo(px(series.length - 1), pad.t + ch);
+  ctx2.lineTo(px(0), pad.t + ch);
+  ctx2.closePath();
+  ctx2.fillStyle = color.replace(/[\d.]+\)$/, "0.12)");
+  ctx2.fill();
+
+  // Linie
+  ctx2.beginPath();
+  ctx2.moveTo(px(0), py(vals[0]));
+  for (let i = 1; i < series.length; i++) ctx2.lineTo(px(i), py(vals[i]));
+  ctx2.strokeStyle = color;
+  ctx2.lineWidth = 1.5;
+  ctx2.lineJoin = "round";
+  ctx2.stroke();
+
+  // Endpunkt-Dot
+  const last = series.length - 1;
+  ctx2.beginPath();
+  ctx2.arc(px(last), py(vals[last]), 3, 0, Math.PI * 2);
+  ctx2.fillStyle = color;
+  ctx2.fill();
+
+  // Jahres-Labels
+  ctx2.fillStyle = "rgba(255,255,255,0.3)";
+  ctx2.font = "9px system-ui";
+  ctx2.textBaseline = "top";
+  ctx2.textAlign = "left";
+  ctx2.fillText(years[0], pad.l, pad.t + ch + 3);
+  ctx2.textAlign = "right";
+  ctx2.fillText(years[last], w - pad.r, pad.t + ch + 3);
+}
+
+function drawTrendPanel(seriesList) {
+  const panel = document.getElementById("trendPanel");
+  const tcanvas = document.getElementById("trendCanvas");
+  if (!seriesList || seriesList.length === 0) { panel.style.display = "none"; return; }
+
+  const wrapper = document.getElementById("wrapper");
+  const w = wrapper.clientWidth - 56;
+  const h = 110;
+  tcanvas.width  = w * dpr; tcanvas.height = h * dpr;
+  tcanvas.style.width = w + "px"; tcanvas.style.height = h + "px";
+  panel.style.display = "";
+
+  const ctx2 = tcanvas.getContext("2d");
+  ctx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx2.fillStyle = "rgba(255,255,255,0.03)";
+  ctx2.fillRect(0, 0, w, h);
+
+  // Alle Jahre sammeln
+  const allYears = [...new Set(seriesList.flatMap(s => s.data.map(d => d.year)))].sort();
+  if (allYears.length < 2) { panel.style.display = "none"; return; }
+
+  const pad = { t: 8, b: 20, l: 36, r: 16 };
+  const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
+
+  // Globaler Min/Max für gemeinsame Achse
+  const allVals = seriesList.flatMap(s => s.data.map(d => d.svb));
+  const minV = 0, maxV = Math.max(...allVals) * 1.05 || 1;
+
+  function px(year) { return pad.l + ((year - allYears[0]) / (allYears[allYears.length - 1] - allYears[0])) * cw; }
+  function py(v)    { return pad.t + ch - (v / maxV) * ch; }
+
+  // Rasterlinien
+  ctx2.strokeStyle = "rgba(255,255,255,0.05)";
+  ctx2.lineWidth = 1;
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.t + (i / 4) * ch;
+    ctx2.beginPath(); ctx2.moveTo(pad.l, y); ctx2.lineTo(pad.l + cw, y); ctx2.stroke();
+  }
+
+  // Y-Achsen-Label
+  ctx2.fillStyle = "rgba(255,255,255,0.25)";
+  ctx2.font = "9px system-ui";
+  ctx2.textAlign = "right";
+  ctx2.textBaseline = "middle";
+  ["0", Math.round(maxV / 2 / 1000) + "T", Math.round(maxV / 1000) + "T"].forEach((lbl, i) => {
+    ctx2.fillText(lbl, pad.l - 4, pad.t + ch - i * ch / 2);
+  });
+
+  // X-Achsen-Labels
+  ctx2.textAlign = "center";
+  ctx2.textBaseline = "top";
+  allYears.filter((_, i) => i % 2 === 0).forEach(yr => {
+    ctx2.fillText(yr, px(yr), pad.t + ch + 4);
+  });
+
+  // Serien zeichnen
+  const palette = ["#4ab8ff", "#7be87b", "#ffb347", "#ff6b8a", "#c77dff", "#00e5d1", "#ffd166", "#ef476f"];
+  seriesList.forEach((s, si) => {
+    const col = palette[si % palette.length];
+    const pts = s.data.filter(d => allYears.includes(d.year)).sort((a, b) => a.year - b.year);
+    if (pts.length < 2) return;
+    ctx2.beginPath();
+    ctx2.moveTo(px(pts[0].year), py(pts[0].svb));
+    for (let i = 1; i < pts.length; i++) ctx2.lineTo(px(pts[i].year), py(pts[i].svb));
+    ctx2.strokeStyle = col;
+    ctx2.lineWidth = 1.8;
+    ctx2.lineJoin = "round";
+    ctx2.stroke();
+    // Label am Ende
+    const last = pts[pts.length - 1];
+    ctx2.fillStyle = col;
+    ctx2.font = "9px system-ui";
+    ctx2.textAlign = "left";
+    ctx2.textBaseline = "middle";
+    ctx2.fillText(s.label.substring(0, 18), px(last.year) + 4, py(last.svb));
+  });
+}
+
 // ── Rendering ──────────────────────────────────────────────────────────
 
-let allData = [];   // alle Nodes aus data.json
-let data = [];      // gefiltert nach viewMode + sectorFilter
+let allData = [];      // alle Nodes aus data.json
+let data = [];         // gefiltert nach viewMode + sectorFilter
+let timeseriesMap = {}; // id → [{year, svb}]
 let rects = [];
 let hovered = null;
 const canvas = document.getElementById("canvas");
@@ -581,6 +754,25 @@ function showTooltip(d, mx, my) {
   const tt = document.getElementById("tooltip");
   tt.querySelector(".tt-title").textContent = d.label;
   tt.querySelector(".tt-metric").innerHTML = metricHighlight(d);
+
+  // Sparkline
+  const series = timeseriesMap[d.id];
+  const sparkCanvas = tt.querySelector(".tt-sparkline");
+  const sparkLabel  = tt.querySelector(".tt-sparkline-label");
+  if (series && series.length >= 2) {
+    const col = tileColor(d, 1);
+    sparkCanvas.style.display = "block";
+    sparkLabel.style.display  = "flex";
+    const firstSVB = series[0].svb, lastSVB = series[series.length - 1].svb;
+    const delta = lastSVB - firstSVB;
+    const deltaStr = (delta >= 0 ? "+" : "") + formatNumber(Math.abs(delta));
+    sparkLabel.innerHTML = `<span>SVB-Verlauf ${series[0].year}–${series[series.length-1].year}</span><span style="color:${col}">${deltaStr}</span>`;
+    drawSparkline(sparkCanvas, series, col);
+  } else {
+    sparkCanvas.style.display = "none";
+    sparkLabel.style.display  = "none";
+  }
+
   tt.querySelector(".tt-stats").innerHTML = `
     <span class="label">SVB (${d.svb_year || "—"})</span><span class="value">${formatNumber(d.svb)}</span>
     <span class="label">Frauenanteil</span><span class="value">${pct(d.anteil_frauen)}</span>
@@ -671,11 +863,36 @@ function updateWachstumStats(total) {
   });
   document.getElementById("block4").innerHTML = `<h3>Wachstumsstufen</h3><div class="tier-bar">${renderTiers(tiers, total)}</div>`;
 
-  document.getElementById("block5").innerHTML = "";
+  // Schnellstes / Langsamstes Wachstum
+  const sorted = [...data].filter(d => d.wachstum_gesamt_pct != null && d.svb)
+    .sort((a, b) => b.wachstum_gesamt_pct - a.wachstum_gesamt_pct);
+  document.getElementById("block5").innerHTML = sorted.length ? `<h3>Top Wachstum</h3><div class="hbar-chart">${renderHbars(sorted.slice(0, 5).map(d => ({
+    label: d.label.split(",")[0].substring(0, 14),
+    val: growth(d.wachstum_gesamt_pct),
+    pct: Math.min(100, Math.max(0, (d.wachstum_gesamt_pct + 5) / 60 * 100)),
+    color: wachstumColor(d.wachstum_gesamt_pct, 0.9),
+  })))}</div>` : "";
+
+  // Trend-Panel zeichnen
+  const trendSeries = data
+    .map(d => ({ id: d.id, label: d.label, data: timeseriesMap[d.id] || [] }))
+    .filter(s => s.data.length >= 2)
+    .sort((a, b) => {
+      const last = s => s.data[s.data.length - 1].svb;
+      return last(b) - last(a);
+    })
+    .slice(0, 8); // max 8 Linien
+  document.getElementById("trendTitle").textContent =
+    "SVB-Verlauf " + (trendSeries[0]?.data[0]?.year ?? "2013") + "–heute";
+  drawTrendPanel(trendSeries);
+
   document.getElementById("block6").innerHTML = "";
 }
 
+function hideTrendPanel() { document.getElementById("trendPanel").style.display = "none"; }
+
 function updateFrauenStats(total) {
+  hideTrendPanel();
   let wS = 0, wC = 0;
   for (const d of data) { if (d.anteil_frauen != null && d.svb) { wS += d.anteil_frauen * d.svb; wC += d.svb; } }
   const avg = wC > 0 ? wS / wC : 0;
@@ -710,6 +927,7 @@ function updateFrauenStats(total) {
 }
 
 function updateTeilzeitStats(total) {
+  hideTrendPanel();
   let wS = 0, wC = 0;
   for (const d of data) { if (d.anteil_teilzeit != null && d.svb) { wS += d.anteil_teilzeit * d.svb; wC += d.svb; } }
   const avg = wC > 0 ? wS / wC : 0;
@@ -743,6 +961,7 @@ function updateTeilzeitStats(total) {
 }
 
 function updateExposureStats(total) {
+  hideTrendPanel();
   let wS = 0, wC = 0;
   for (const d of data) { if (d.exposure != null && d.svb) { wS += d.exposure * d.svb; wC += d.svb; } }
   const avg = wC > 0 ? wS / wC : 0;
@@ -937,6 +1156,26 @@ function makeDemoData() {
   ];
 }
 
+// ── Synthetische Zeitreihe für Demo-Daten ─────────────────────────────
+
+function makeDemoTimeseries(nodes) {
+  const map = {};
+  const startYear = 2013, endYear = 2023, n = endYear - startYear;
+  for (const d of nodes) {
+    if (!d.svb || !d.cagr_pct) continue;
+    const cagr = d.cagr_pct / 100;
+    const startSVB = d.svb / Math.pow(1 + cagr, n);
+    const series = [];
+    for (let y = startYear; y <= endYear; y++) {
+      // leichtes Rauschen für natürlichere Kurve
+      const noise = 1 + (Math.random() - 0.5) * 0.015;
+      series.push({ year: y, svb: Math.round(startSVB * Math.pow(1 + cagr, y - startYear) * noise) });
+    }
+    map[d.id] = series;
+  }
+  return map;
+}
+
 // ── Laden ──────────────────────────────────────────────────────────────
 
 async function init() {
@@ -948,6 +1187,10 @@ async function init() {
       const nodes = (json.nodes || []).filter(d => d.svb && d.svb > 0);
       if (nodes.length > 0) {
         allData = nodes;
+        // Zeitreihen aus data.json laden
+        for (const s of (json.timeseries || [])) {
+          if (s.data && s.data.length >= 2) timeseriesMap[s.id] = s.data;
+        }
         loaded = true;
       }
     }
@@ -958,6 +1201,7 @@ async function init() {
   if (!loaded) {
     document.getElementById("noBanner").style.display = "";
     allData = makeDemoData();
+    timeseriesMap = makeDemoTimeseries(allData);
   }
 
   layout();
