@@ -220,6 +220,73 @@ canvas#canvas { display: block; cursor: default; }
   margin-bottom: 8px;
 }
 #trendCanvas { display: block; }
+
+/* ── Schlüsselentwicklungen ──────────────────────────────────────── */
+#keyFacts {
+  padding: 32px 28px 40px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 8px;
+}
+#keyFacts h2 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+  color: var(--fg);
+}
+.kf-source {
+  font-size: 11px;
+  color: var(--fg2);
+  margin-bottom: 24px;
+}
+.kf-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+.kf-card {
+  background: var(--bg2);
+  border: 1px solid rgba(255,255,255,0.07);
+  border-radius: 8px;
+  padding: 18px 18px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.kf-icon {
+  font-size: 20px;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.kf-stat {
+  font-size: 28px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: #fff;
+  line-height: 1.1;
+}
+.kf-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--fg2);
+  margin-bottom: 6px;
+  line-height: 1.3;
+}
+.kf-text {
+  font-size: 12px;
+  line-height: 1.55;
+  color: var(--fg2);
+  margin-bottom: 10px;
+  flex: 1;
+}
+.kf-chart {
+  width: 100%;
+  height: 60px;
+  display: block;
+  border-radius: 4px;
+  background: rgba(255,255,255,0.02);
+  overflow: visible;
+}
 </style>
 </head>
 <body>
@@ -309,6 +376,147 @@ canvas#canvas { display: block; cursor: default; }
 <div id="trendPanel">
   <h3 id="trendTitle">SVB-Verlauf</h3>
   <canvas id="trendCanvas"></canvas>
+</div>
+
+<!-- ── Schlüsselentwicklungen ─────────────────────────────────────── -->
+<div id="keyFacts">
+  <h2>Schlüsselentwicklungen im Sozialwesen (2013–2023)</h2>
+  <p class="kf-source">Quelle: Bundesagentur für Arbeit, Beschäftigungsstatistik. Stichtag jeweils 30. Juni. Werte gerundet.</p>
+
+  <div class="kf-grid">
+
+    <!-- 1 Beschäftigungswachstum -->
+    <div class="kf-card">
+      <div class="kf-icon">📈</div>
+      <div class="kf-stat">+35 %</div>
+      <div class="kf-title">Beschäftigungswachstum 2013–2023</div>
+      <p class="kf-text">Soziale Dienstleistungsberufe (KldB 81/83) zählen zu den am stärksten wachsenden Berufsfeldern. Heilerziehungspflege (+45 %) und Kinderbetreuung (+38 %) führen das Wachstum an — getrieben durch Kita-Ausbau, Pflegereformen und demografischen Wandel.</p>
+      <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#4ab8ff" stop-opacity="0.3"/>
+            <stop offset="100%" stop-color="#4ab8ff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <!-- Wachstumskurve 2013–2023, normalisiert -->
+        <polyline fill="url(#g1)" stroke="none"
+          points="0,52 22,49 44,46 66,43 88,40 110,37 132,34 154,31 176,27 198,23 220,18 220,60 0,60"/>
+        <polyline fill="none" stroke="#4ab8ff" stroke-width="2" stroke-linejoin="round"
+          points="0,52 22,49 44,46 66,43 88,40 110,37 132,34 154,31 176,27 198,23 220,18"/>
+        <circle cx="220" cy="18" r="3" fill="#4ab8ff"/>
+        <text x="2" y="58" font-size="8" fill="rgba(255,255,255,0.35)">2013</text>
+        <text x="185" y="58" font-size="8" fill="rgba(255,255,255,0.35)">2023</text>
+        <text x="195" y="14" font-size="9" fill="#4ab8ff" font-weight="600">+35%</text>
+      </svg>
+    </div>
+
+    <!-- 2 Frauendomäne -->
+    <div class="kf-card">
+      <div class="kf-icon">♀</div>
+      <div class="kf-stat">~80 %</div>
+      <div class="kf-title">Frauenanteil — höchster aller Sektoren</div>
+      <p class="kf-text">Kein anderer Wirtschaftsbereich ist stärker von Frauen geprägt: Kinderbetreuung (96 %), Geburtshilfe (98 %) und Krankenpflege (81 %) liegen weit über dem Gesamtwirtschafts-Durchschnitt von 48 %. Die Feminisierung korreliert mit vergleichsweise niedrigen Entgelten.</p>
+      <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Vergleichs-Balken -->
+        <rect x="10" y="10" width="176" height="14" rx="3" fill="rgba(255,255,255,0.05)"/>
+        <rect x="10" y="10" width="176" height="14" rx="3" fill="url(#gFrauen)"/>
+        <defs>
+          <linearGradient id="gFrauen" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#7be87b" stop-opacity="0.9"/>
+            <stop offset="80%" stop-color="#7be87b" stop-opacity="0.7"/>
+            <stop offset="100%" stop-color="rgba(255,255,255,0.05)"/>
+          </linearGradient>
+        </defs>
+        <rect x="10" y="10" width="141" height="14" rx="3" fill="#7be87b" opacity="0.85"/>
+        <text x="155" y="21" font-size="9" fill="#7be87b" font-weight="600">80%</text>
+        <rect x="10" y="34" width="176" height="14" rx="3" fill="rgba(255,255,255,0.05)"/>
+        <rect x="10" y="34" width="84" height="14" rx="3" fill="rgba(255,255,255,0.2)"/>
+        <text x="98" y="45" font-size="9" fill="rgba(255,255,255,0.45)">48%</text>
+        <text x="2" y="21" font-size="8" fill="rgba(255,255,255,0.35)" text-anchor="start"
+              transform="translate(0,0)">&#160;</text>
+        <text x="10" y="57" font-size="8" fill="rgba(255,255,255,0.3)">Sozialwesen ████  Gesamtwirtschaft ░░░░</text>
+      </svg>
+    </div>
+
+    <!-- 3 Teilzeit -->
+    <div class="kf-card">
+      <div class="kf-icon">⏱</div>
+      <div class="kf-stat">~50 %</div>
+      <div class="kf-title">Teilzeitquote — doppelt so hoch wie der Schnitt</div>
+      <p class="kf-text">Rund die Hälfte aller SVB im Sozialwesen arbeitet in Teilzeit (Gesamtwirtschaft: ~30 %). Besonders hoch: Kinderbetreuung (58 %) und Sozialarbeit (44 %). Hohe Teilzeitquoten gelten als Strukturmerkmal des Sektors — und als Hemmnis bei der Fachkräftegewinnung.</p>
+      <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Donut-ähnliche Segmentdarstellung -->
+        <rect x="10" y="14" width="110" height="18" rx="3" fill="#ffb347" opacity="0.85"/>
+        <rect x="124" y="14" width="88" height="18" rx="3" fill="rgba(255,255,255,0.08)"/>
+        <text x="10" y="10" font-size="8" fill="rgba(255,255,255,0.35)">Sozialwesen</text>
+        <text x="62" y="27" font-size="9" fill="#111" font-weight="700" text-anchor="middle">50% TZ</text>
+        <text x="168" y="27" font-size="9" fill="rgba(255,255,255,0.35)" text-anchor="middle">50% VZ</text>
+        <rect x="10" y="40" width="66" height="12" rx="3" fill="rgba(255,255,255,0.2)"/>
+        <rect x="80" y="40" width="132" height="12" rx="3" fill="rgba(255,255,255,0.06)"/>
+        <text x="10" y="36" font-size="8" fill="rgba(255,255,255,0.35)">Gesamtwirtschaft</text>
+        <text x="43" y="50" font-size="8" fill="rgba(255,255,255,0.45)" text-anchor="middle">30% TZ</text>
+        <text x="146" y="50" font-size="8" fill="rgba(255,255,255,0.25)" text-anchor="middle">70% VZ</text>
+      </svg>
+    </div>
+
+    <!-- 4 Fachkräftemangel -->
+    <div class="kf-card">
+      <div class="kf-icon">🔍</div>
+      <div class="kf-stat">&gt;150.000</div>
+      <div class="kf-title">Offene Stellen — chronischer Fachkräftemangel</div>
+      <p class="kf-text">Die BA meldet in Pflege, Kita und Sozialarbeit dauerhaft über 150.000 unbesetzte Stellen. Die Vakanzzeit (Tage bis Besetzung) ist in der Altenpflege mit &gt;200 Tagen die längste aller Berufsfelder. Der Bedarf wächst weiter: bis 2035 werden ca. 500.000 zusätzliche Pflegekräfte benötigt (Prognos 2022).</p>
+      <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+        <!-- Balkendiagramm offene Stellen nach Bereich -->
+        <text x="0" y="8" font-size="8" fill="rgba(255,255,255,0.3)">Offene Stellen (Auswahl, BA 2023)</text>
+        <!-- Altenpflege -->
+        <rect x="60" y="13" width="120" height="10" rx="2" fill="#ff6b8a" opacity="0.85"/>
+        <text x="0"  y="21" font-size="8" fill="rgba(255,255,255,0.5)">Altenpfl.</text>
+        <text x="183" y="21" font-size="8" fill="#ff6b8a">~62T</text>
+        <!-- Krankenpflege -->
+        <rect x="60" y="27" width="88" height="10" rx="2" fill="#ffb347" opacity="0.85"/>
+        <text x="0"  y="35" font-size="8" fill="rgba(255,255,255,0.5)">Krankenpl.</text>
+        <text x="151" y="35" font-size="8" fill="#ffb347">~45T</text>
+        <!-- Kita -->
+        <rect x="60" y="41" width="60" height="10" rx="2" fill="#4ab8ff" opacity="0.85"/>
+        <text x="0"  y="49" font-size="8" fill="rgba(255,255,255,0.5)">Kita</text>
+        <text x="123" y="49" font-size="8" fill="#4ab8ff">~31T</text>
+      </svg>
+    </div>
+
+    <!-- 5 Entgelt -->
+    <div class="kf-card">
+      <div class="kf-icon">€</div>
+      <div class="kf-stat">−15 %</div>
+      <div class="kf-title">Entgeltlücke trotz Reformdruck</div>
+      <p class="kf-text">Trotz Tarifsteigerungen (TVöD, TV-L, kirchliche Tarife) und gesetzlicher Pflegemindestlöhne verdienen Beschäftigte im Sozialwesen im Median ca. 15 % weniger als in vergleichbaren Qualifikationsgruppen. Seit 2020 hat sich die Lücke durch Pflegebonus und Tarifrunden leicht verringert, bleibt aber strukturell.</p>
+      <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="gLohn" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#c77dff"/>
+            <stop offset="100%" stop-color="#7be87b"/>
+          </linearGradient>
+        </defs>
+        <text x="0" y="9" font-size="8" fill="rgba(255,255,255,0.3)">Median-Entgelt (Index: Gesamtwirtschaft = 100)</text>
+        <!-- Gesamtwirtschaft -->
+        <rect x="70" y="13" width="130" height="12" rx="2" fill="rgba(255,255,255,0.15)"/>
+        <text x="0" y="23" font-size="8" fill="rgba(255,255,255,0.45)">Gesamt</text>
+        <text x="203" y="23" font-size="8" fill="rgba(255,255,255,0.45)">100</text>
+        <!-- Sozialwesen -->
+        <rect x="70" y="30" width="110" height="12" rx="2" fill="#c77dff" opacity="0.8"/>
+        <text x="0"  y="40" font-size="8" fill="rgba(255,255,255,0.45)">Sozialw.</text>
+        <text x="183" y="40" font-size="8" fill="#c77dff">~85</text>
+        <!-- Pfeil -->
+        <line x1="180" y1="19" x2="180" y2="36" stroke="#ff6b8a" stroke-width="1.5" marker-end="url(#arr)"/>
+        <defs>
+          <marker id="arr" markerWidth="4" markerHeight="4" refX="2" refY="2" orient="auto">
+            <path d="M0,0 L4,2 L0,4 Z" fill="#ff6b8a"/>
+          </marker>
+        </defs>
+        <text x="164" y="51" font-size="8" fill="#ff6b8a">−15%</text>
+      </svg>
+    </div>
+
+  </div>
 </div>
 </div>
 
