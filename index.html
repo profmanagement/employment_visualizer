@@ -287,6 +287,159 @@ canvas#canvas { display: block; cursor: default; }
   background: rgba(255,255,255,0.02);
   overflow: visible;
 }
+
+/* ── Methodik ────────────────────────────────────────────────────── */
+#methodik {
+  padding: 32px 28px 28px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  margin-top: 8px;
+}
+#methodik h2 {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  margin-bottom: 20px;
+  color: var(--fg);
+}
+.meth-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+.meth-step {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+.meth-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--fg2);
+  margin-top: 1px;
+}
+.meth-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 4px;
+}
+.meth-title code {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 12px;
+  background: rgba(255,255,255,0.07);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.meth-step p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--fg2);
+}
+.meth-step a { color: var(--fg2); }
+.meth-codes {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.meth-codes-col { flex: 1; min-width: 220px; }
+.meth-codes-title {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--fg2);
+  margin-bottom: 8px;
+}
+.meth-codes table { border-collapse: collapse; width: 100%; }
+.meth-codes td {
+  font-size: 12px;
+  padding: 3px 8px 3px 0;
+  vertical-align: top;
+  color: var(--fg2);
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  line-height: 1.4;
+}
+.meth-codes td:first-child {
+  font-family: 'SF Mono', Menlo, Consolas, monospace;
+  font-size: 11px;
+  color: var(--fg);
+  white-space: nowrap;
+  padding-right: 12px;
+  width: 28px;
+}
+.meth-caveat {
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--fg2);
+  background: rgba(255,255,255,0.03);
+  border-left: 2px solid rgba(255,255,255,0.1);
+  padding: 10px 14px;
+  border-radius: 0 4px 4px 0;
+}
+.meth-caveat strong { color: var(--fg); }
+
+/* ── About ───────────────────────────────────────────────────────── */
+#about {
+  border-top: 1px solid rgba(255,255,255,0.06);
+  padding: 24px 28px 32px;
+}
+.about-inner {
+  display: flex;
+  gap: 32px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+.about-text { flex: 1; min-width: 240px; }
+.about-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--fg);
+  margin-bottom: 8px;
+}
+.about-text p {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--fg2);
+  margin-bottom: 6px;
+}
+.about-text a { color: var(--fg2); }
+.about-text strong { color: var(--fg); }
+.about-credits {
+  font-size: 11px !important;
+  color: rgba(136,136,148,0.7) !important;
+}
+.about-links {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex-shrink: 0;
+}
+.about-links a {
+  font-size: 12px;
+  color: var(--fg2);
+  text-decoration: none;
+  padding: 5px 12px;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 4px;
+  transition: all 0.15s;
+  text-align: center;
+}
+.about-links a:hover {
+  background: rgba(255,255,255,0.05);
+  color: var(--fg);
+  border-color: rgba(255,255,255,0.15);
+}
 </style>
 </head>
 <body>
@@ -516,9 +669,103 @@ canvas#canvas { display: block; cursor: default; }
       </svg>
     </div>
 
-  </div>
-</div>
-</div>
+  </div><!-- /.kf-grid -->
+
+  <!-- ── Methodik ──────────────────────────────────────────────────── -->
+  <div id="methodik">
+    <h2>So wurden diese Daten generiert</h2>
+
+    <div class="meth-grid">
+      <div class="meth-step">
+        <div class="meth-num">1</div>
+        <div>
+          <div class="meth-title">Download — <code>scrape_ba.py</code></div>
+          <p>Ein Playwright-Skript (Python) navigiert <a href="https://statistik.arbeitsagentur.de" target="_blank">statistik.arbeitsagentur.de</a> automatisch, akzeptiert den Cookie-Banner und lädt alle Excel-Tabellen für Beschäftigung nach Berufen (KldB 2010) und Wirtschaftszweigen (WZ 2008) herunter. Direkte HTTP-Anfragen schlagen fehl, da das BA-Portal Session-Cookies erfordert — daher Playwright mit echtem Chromium-Browser.</p>
+        </div>
+      </div>
+      <div class="meth-step">
+        <div class="meth-num">2</div>
+        <div>
+          <div class="meth-title">Parsen — <code>parse_ba.py</code></div>
+          <p>Die Excel-Dateien enthalten 5–7 Metadaten-Kopfzeilen. Das Parse-Skript (pandas) überspringt diese, normalisiert Spaltennamen (SVB gesamt, Frauen, Teilzeit, Geringfügig), filtert auf KldB-Berufshauptgruppen 81–88 und WZ-Abteilungen 85–88 und schreibt bereinigte CSVs für alle verfügbaren Jahrgänge (2013–heute, Stichtag 30. Juni).</p>
+        </div>
+      </div>
+      <div class="meth-step">
+        <div class="meth-num">3</div>
+        <div>
+          <div class="meth-title">Aufbereitung — <code>build_site_data.py</code></div>
+          <p>Aus den CSVs werden Kennzahlen berechnet: Frauenanteil, Teilzeitquote, Geringfügigenanteil, Gesamtwachstum und CAGR. Zusätzlich werden KI-Expositionsscores aus dem US-amerikanischen <em>BLS Occupational Outlook Handbook</em> via Berufs-Mapping auf deutsche KldB-Gruppen übertragen. Das Ergebnis ist <code>data.json</code> für die Visualisierung.</p>
+        </div>
+      </div>
+      <div class="meth-step">
+        <div class="meth-num">4</div>
+        <div>
+          <div class="meth-title">Visualisierung — <code>index.html</code></div>
+          <p>Canvas-basierte Squarified-Treemap in reinem JavaScript (ohne Frameworks). Rechteckgröße proportional zu SVB. Vier Farbmodi: Wachstum, Frauenanteil, Teilzeitquote, KI-Exposition. Sparklines im Tooltip zeigen den SVB-Zeitverlauf pro Berufsgruppe; das Trend-Panel zeigt alle Serien im Vergleich.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="meth-codes">
+      <div class="meth-codes-col">
+        <div class="meth-codes-title">KldB 2010 — Berufshauptgruppen</div>
+        <table>
+          <tr><td>81</td><td>Erziehung, soziale Arbeit, Heilerziehungspflege</td></tr>
+          <tr><td>82</td><td>Lehrende und Ausbildende</td></tr>
+          <tr><td>83</td><td>Gesundheits- u. Krankenpflege, Rettungsdienst</td></tr>
+          <tr><td>84</td><td>Therapie und Heilpraktik</td></tr>
+          <tr><td>85</td><td>Human- und Zahnmedizin, Tiermedizin</td></tr>
+          <tr><td>86</td><td>Psychologie, nichtärztl. Psychotherapie</td></tr>
+          <tr><td>87</td><td>Pharmazie</td></tr>
+          <tr><td>88</td><td>Medizintechnik, Orthoptik, Audiologie</td></tr>
+        </table>
+      </div>
+      <div class="meth-codes-col">
+        <div class="meth-codes-title">WZ 2008 — Wirtschaftsabteilungen</div>
+        <table>
+          <tr><td>85</td><td>Erziehung und Unterricht</td></tr>
+          <tr><td>86</td><td>Gesundheitswesen</td></tr>
+          <tr><td>87</td><td>Heime (ohne Erholungs- und Ferienheime)</td></tr>
+          <tr><td>88</td><td>Sozialwesen ohne Unterkunft</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p class="meth-caveat"><strong>Hinweis zu KI-Expositionsscores:</strong> Die Scores (0–10) wurden ursprünglich via LLM für US-amerikanische BLS-Berufe generiert und auf deutsche KldB-Gruppen übertragen. Sie sind grobe Schätzungen, keine wissenschaftlichen Prognosen. Ein hoher Score bedeutet nicht, dass ein Beruf verschwindet — er beschreibt das Ausmaß, in dem KI die Arbeit verändern wird. Soziale und pflegerische Berufe liegen typischerweise bei 2–5, da körperliche Präsenz und Beziehungsarbeit einen natürlichen Schutz bieten.</p>
+  </div><!-- /#methodik -->
+
+  <!-- ── About ────────────────────────────────────────────────────── -->
+  <div id="about">
+    <div class="about-inner">
+      <div class="about-text">
+        <div class="about-title">Über dieses Projekt</div>
+        <p>
+          Erstellt von <strong>Maik Arnold</strong>
+          (<a href="https://github.com/profmanagement" target="_blank">profmanagement</a>).
+          Geforkt von
+          <a href="https://github.com/karpathy/jobs" target="_blank">karpathy/jobs</a>
+          von <strong>Andrej Karpathy</strong> und für den deutschen Arbeitsmarkt adaptiert —
+          mit Daten der <a href="https://statistik.arbeitsagentur.de" target="_blank">Bundesagentur für Arbeit</a>
+          und Unterstützung von <a href="https://claude.ai/code" target="_blank">Claude Code</a>.
+        </p>
+        <p class="about-credits">
+          Credits &amp; Dank: <strong>Andrej Karpathy</strong> für das originale Projekt,
+          das Treemap-Layout und das LLM-Scoring-Konzept.
+          Daten: Bundesagentur für Arbeit (Lizenz: dl-de/by-2-0).
+          KI-Scores: adaptiert aus dem BLS Occupational Outlook Handbook.
+        </p>
+      </div>
+      <div class="about-links">
+        <a href="https://github.com/profmanagement/employment_visualizer" target="_blank">GitHub</a>
+        <a href="https://github.com/karpathy/jobs" target="_blank">Original (Karpathy)</a>
+        <a href="https://statistik.arbeitsagentur.de" target="_blank">BA Statistik</a>
+        <a href="https://www.bls.gov/ooh/" target="_blank">BLS OOH</a>
+      </div>
+    </div>
+  </div><!-- /#about -->
+
+</div><!-- /#keyFacts -->
+</div><!-- /#wrapper -->
 
 <div id="tooltip">
   <div class="tt-title"></div>
