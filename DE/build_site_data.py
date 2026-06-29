@@ -33,39 +33,12 @@ BLS_SCORES_PATH = HERE.parent / "scores.json"
 KLDB_BLS_MAP: dict[str, str] = {
     # BHG 81 – Medizinische Gesundheitsberufe
     "81":  "registered-nurses",
-    "811": "childcare-workers",                                          # → 2
-    "812": "social-workers",                                             # → 4
-    "813": "special-education-teachers",                                 # → 5
     # BHG 82 – Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe
     "82":  "nursing-assistants",
-    "821": "high-school-teachers",                                       # → 7
-    "822": "middle-school-teachers",                                     # → 6
-    "823": "postsecondary-teachers",                                     # → 7
-    "824": "preschool-teachers",                                         # → 3
     # BHG 83 – Erziehung, soziale und hauswirtschaftliche Berufe, Theologie
     "83":  "social-workers",
-    "831": "registered-nurses",                                          # → 4
-    "832": "emts-and-paramedics",                                        # → 3
-    "833": "nurse-anesthetists-nurse-midwives-and-nurse-practitioners",  # → 5
     # BHG 84 – Lehrende und ausbildende Berufe
     "84":  "high-school-teachers",
-    "841": "physical-therapists",                                        # → 3
-    "842": "occupational-therapists",                                    # → 3
-    "843": "speech-language-pathologists",                               # → 3
-    # BHG 85 – Human- und Zahnmedizin, Tiermedizin
-    "85":  "physicians-and-surgeons",
-    "851": "physicians-and-surgeons",                                    # → 5
-    "852": "dentists",                                                   # → 3
-    "853": "veterinarians",                                              # → 4
-    # BHG 86 – Psychologie, nichtärztliche Psychotherapie
-    "86":  "psychologists",
-    "861": "psychologists",                                              # → 6
-    # BHG 87 – Pharmazie
-    "87":  "pharmacists",
-    "871": "pharmacists",                                                # → 5
-    # BHG 88 – Medizintechnik, Orthoptik, Audiologie
-    "88":  "health-educators",
-    "881": "health-educators",                                           # → 6
 }
 
 WZ_BLS_MAP: dict[str, str] = {
@@ -132,36 +105,9 @@ WZ_LABELS: dict[str, str] = {
 KLDB_RATIONALE: dict[str, str] = {
     # Aktuelle BA-Zeitreihe enthält KldB-Berufshauptgruppen 81–84.
     "81":  "Medizinische Gesundheitsberufe verbinden Fachwissen, körperliche Versorgung und Patientenkontakt. KI kann Diagnostik, Dokumentation und Entscheidungsunterstützung verbessern; der direkte Versorgungskontakt bleibt menschlich geprägt.",
-    "811": "Kinderbetreuung erfordert kontinuierliche körperliche Anwesenheit, nonverbale Kommunikation und Fürsorge — Bereiche, in denen KI kaum substituieren kann. Administrative Aufgaben könnten automatisiert werden.",
-    "812": "Sozialarbeiter*innen verbringen viel Zeit mit Beratung, Krisenintervention und Behördenkoordination. Dokumentation und Fallverwaltung sind KI-zugänglich; der direkte Klientenkontakt bleibt menschlich.",
-    "813": "Heilerziehungspflege kombiniert pädagogische Facharbeit mit pflegerischer Begleitung. Individuelle Förderplanung kann KI-gestützt werden, der unmittelbare Beziehungsaufbau bleibt durch KI kaum ersetzbar.",
     "82":  "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe sind stark präsenz- und körperbezogen. Planung, Dokumentation und Beratung sind KI-affin; Behandlung, Pflege und persönliche Dienstleistung bleiben nur begrenzt automatisierbar.",
-    "821": "Lehrkräfte an allgemeinbildenden Schulen erstellen wissensbasierte Inhalte und geben Feedback — beides KI-affine Tätigkeiten. Die Klassenführung, soziale Begleitung und individuelle Förderung erfordern weiterhin menschliche Präsenz.",
-    "822": "Berufliche Bildung verbindet Fachtheorie (KI-zugänglich) mit praktischer Ausbildung an Maschinen und in Betrieben (KI-resistent). Die Exposition ist heterogen je nach Fachrichtung.",
-    "823": "Hochschullehrende forschen und lehren überwiegend digital — Literaturauswertung, Manuskripterstellung und Prüfungsbewertung sind KI-affin. Originäre Forschungsideen und Lehrkommunikation bleiben menschliche Domänen.",
-    "824": "Kursleitung und außerschulische Bildung ist stark kontextabhängig: digitale Weiterbildung ist hoch KI-exponiert, handwerkliche und sportliche Kurse kaum.",
     "83":  "Erziehungs-, Sozial- und hauswirtschaftliche Berufe sind personenbezogen und erfordern Beziehungsgestaltung, situatives Urteil und physische Präsenz. KI kann Fallverwaltung, Dokumentation und Vorbereitung unterstützen.",
-    "831": "Krankenpfleger*innen übernehmen sowohl wissensintensive Aufgaben (Medikation, Vitalkontrolle) als auch körperliche Pflegehandlungen. KI kann Entscheidungsunterstützung und Dokumentation verbessern, nicht jedoch Pflege ersetzen.",
-    "832": "Rettungssanitäter*innen arbeiten in unvorhersehbaren Notfallsituationen, die physische Präsenz und Schnellentscheidung erfordern. KI-Dispatch und Navigationsunterstützung sind möglich, der Kerneinsatz bleibt menschlich.",
-    "833": "Hebammen leisten persönliche Begleitung während Schwangerschaft und Geburt. KI kann Risikoscreening und Dokumentation unterstützen; die direkte Geburtsbegleitung erfordert zwingend menschliche Präsenz.",
     "84":  "Lehrende und ausbildende Berufe sind mit KI bei Unterrichtsplanung, Materialerstellung und Feedback stark konfrontiert. Direkte pädagogische Arbeit und Beziehungsgestaltung bleiben menschlich geprägt.",
-    "841": "Physiotherapeut*innen arbeiten primär durch körperliche Behandlung — Mobilisation, Massage, Übungsanleitung. KI kann Befunderhebung und Übungsplanung unterstützen, ersetzt aber nicht den Behandlungskontakt.",
-    "842": "Ergotherapie ist stark auf individuelle Alltagsanpassung ausgerichtet. Dokumentation und Therapieplanung sind KI-affin; die handlungsbasierte Therapiesitzung erfordert körperliche Ko-Präsenz.",
-    "843": "Logopädie kombiniert Sprachdiagnostik (zunehmend KI-gestützt) mit individueller Sprachtherapie. KI-Tools für Sprachanalyse und Übungsrückmeldung sind bereits im Einsatz; der therapeutische Prozess bleibt menschlich.",
-    # Medizin
-    "85":  "Ärztliche Berufe sind stärker KI-exponiert als Pflegeberufe: Diagnostik, Bildauswertung und Literaturrecherche sind hochgradig KI-affin. Operativer und invasiver Eingriff sowie Patientenkommunikation erfordern weiterhin menschliches Urteil und Präsenz.",
-    "851": "Ärzt*innen sind mit schnell wachsenden KI-Fähigkeiten konfrontiert: Radiologiebefunde, Pathologiediagnosen und klinische Entscheidungsunterstützung werden KI-gestützt. Arzt-Patienten-Gespräch, ethische Abwägung und operative Eingriffe bleiben menschlich.",
-    "852": "Zahnärzt*innen arbeiten überwiegend körperlich-manuell. Diagnostik (Röntgenauswertung) ist KI-zugänglich; Behandlung am Patienten erfordert manuelle Präzision und persönliche Beziehung.",
-    "853": "Tierärzt*innen kombinieren klinische Diagnostik mit manueller Behandlung und Chirurgie. KI kann Bilddiagnostik und Anamnese unterstützen; physische Untersuchung und operative Eingriffe bleiben menschliche Domäne.",
-    # Psychologie
-    "86":  "Psychologische Berufe sind zweigespalten: wissensintensive Diagnostik und Gutachtenerstellung sind hoch KI-exponiert; die therapeutische Beziehung und klinische Einschätzung komplexer Lebenssituationen bleiben menschlich geprägt.",
-    "861": "Psychologische Beratung und Therapie basiert auf vertrauensvoller Beziehungsarbeit. KI kann Diagnostikinstrumente und Dokumentation unterstützen; die therapeutische Interaktion selbst hat einen erheblichen menschlichen Schutz.",
-    # Pharmazie
-    "87":  "Apotheker*innen übernehmen zunehmend beratungsintensive Aufgaben, da Dispensierung und Logistik automatisierbar sind. Arzneimittelinteraktionsprüfung ist KI-affin; persönliche Beratung und Medikationsmanagement bleiben menschlich.",
-    "871": "Apothekenarbeit ist eine Mischung aus digitaler Datenverwaltung (KI-zugänglich) und persönlicher Beratung (menschlich). Routineaufgaben in der Logistik können vollständig automatisiert werden.",
-    # Medizintechnik
-    "88":  "Medizintechnische Berufe verbinden technisches Fachwissen mit praktischer Anwendung an Patient*innen. Geräteauswertung und Dokumentation sind KI-affin; Bedienung, Kalibrierung und Patientenbegleitung erfordern Präsenz.",
-    "881": "Medizintechniker*innen warten und bedienen diagnostische Geräte. Auswertungsalgorithmen sind KI-affin; technische Wartung und Patientenkontakt bleiben körperlich.",
 }
 
 WZ_RATIONALE: dict[str, str] = {
