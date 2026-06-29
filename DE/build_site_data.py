@@ -2,7 +2,7 @@
 Baut DE/site/data.json aus den verarbeiteten CSVs und BLS-AI-Scores.
 
 Quellen:
-  DE/data/processed/kldb_blk.csv  – KldB BHG 81–88 (Soziales, Bildung, Gesundheit)
+  DE/data/processed/kldb_blk.csv  – KldB BHG 81–84 (Gesundheit, Soziales, Bildung)
   DE/data/processed/wz_blk.csv   – WZ 85–88 (Bildung, Gesundheit, Sozialwesen)
   ../scores.json                  – BLS AI-Exposure-Scores (EN → DE gemappt)
 
@@ -31,24 +31,24 @@ BLS_SCORES_PATH = HERE.parent / "scores.json"
 # Skala 0–10: 0 = kaum KI-Exposition, 10 = vollständig digital/automatisierbar.
 
 KLDB_BLS_MAP: dict[str, str] = {
-    # BHG 81 – Erziehung, soziale Arbeit, Heilerziehungspflege
-    "81":  "social-workers",
+    # BHG 81 – Medizinische Gesundheitsberufe
+    "81":  "registered-nurses",
     "811": "childcare-workers",                                          # → 2
     "812": "social-workers",                                             # → 4
     "813": "special-education-teachers",                                 # → 5
-    # BHG 82 – Lehrende und Ausbildende
-    "82":  "high-school-teachers",
+    # BHG 82 – Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe
+    "82":  "nursing-assistants",
     "821": "high-school-teachers",                                       # → 7
     "822": "middle-school-teachers",                                     # → 6
     "823": "postsecondary-teachers",                                     # → 7
     "824": "preschool-teachers",                                         # → 3
-    # BHG 83 – Gesundheits- und Krankenpflege
-    "83":  "registered-nurses",
+    # BHG 83 – Erziehung, soziale und hauswirtschaftliche Berufe, Theologie
+    "83":  "social-workers",
     "831": "registered-nurses",                                          # → 4
     "832": "emts-and-paramedics",                                        # → 3
     "833": "nurse-anesthetists-nurse-midwives-and-nurse-practitioners",  # → 5
-    # BHG 84 – Therapie und Heilpraktik
-    "84":  "physical-therapists",
+    # BHG 84 – Lehrende und ausbildende Berufe
+    "84":  "high-school-teachers",
     "841": "physical-therapists",                                        # → 3
     "842": "occupational-therapists",                                    # → 3
     "843": "speech-language-pathologists",                               # → 3
@@ -96,41 +96,10 @@ WZ_BLS_MAP: dict[str, str] = {
 # ── Beschreibungen auf Deutsch ─────────────────────────────────────────────
 
 KLDB_LABELS: dict[str, str] = {
-    # Soziales
-    "81":  "Erziehung, soziale Arbeit, Heilerziehungspflege",
-    "811": "Kinderbetreuung und -erziehung",
-    "812": "Sozialarbeit, Sozialpädagogik",
-    "813": "Heilerziehungspflege, Sonderpädagogik",
-    # Bildung
-    "82":  "Lehrende und Ausbildende",
-    "821": "Lehrtätigkeit allgemeinbildende Schulen",
-    "822": "Lehrtätigkeit berufsbildende Schulen",
-    "823": "Hochschullehre und -forschung",
-    "824": "Außerschulische Bildung, Kursleitung",
-    # Pflege
-    "83":  "Gesundheits- u. Krankenpflege, Rettungsdienst, Geburtshilfe",
-    "831": "Gesundheits- und Krankenpflege",
-    "832": "Rettungsdienst",
-    "833": "Geburtshilfe (Hebammen)",
-    # Therapie
-    "84":  "Therapie und Heilpraktik",
-    "841": "Physiotherapie",
-    "842": "Ergotherapie",
-    "843": "Logopädie, Sprachtherapie",
-    # Medizin
-    "85":  "Human- und Zahnmedizin, Tiermedizin",
-    "851": "Humanmedizin (Ärzt*innen)",
-    "852": "Zahnmedizin",
-    "853": "Tiermedizin",
-    # Psychologie
-    "86":  "Psychologie, nichtärztliche Psychotherapie",
-    "861": "Psychologische Beratung und Therapie",
-    # Pharmazie
-    "87":  "Pharmazie",
-    "871": "Apotheke und Pharmaberatung",
-    # Medizintechnik
-    "88":  "Medizintechnik, Orthoptik, Audiologie",
-    "881": "Medizintechnischer Dienst",
+    "81":  "Medizinische Gesundheitsberufe",
+    "82":  "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe",
+    "83":  "Erziehung, soziale und hauswirtschaftliche Berufe, Theologie",
+    "84":  "Lehrende und ausbildende Berufe",
 }
 
 WZ_LABELS: dict[str, str] = {
@@ -161,24 +130,21 @@ WZ_LABELS: dict[str, str] = {
 # ── KI-Exposure-Rationale auf Deutsch ─────────────────────────────────────
 
 KLDB_RATIONALE: dict[str, str] = {
-    # Soziales
-    "81":  "Berufe in Erziehung und sozialer Arbeit sind stark personenbezogen und erfordern physische Präsenz sowie emotionale Kompetenz. KI kann administrative Aufgaben und Dokumentation übernehmen, der Kernbereich menschlicher Beziehungsarbeit bleibt jedoch weitgehend geschützt.",
+    # Aktuelle BA-Zeitreihe enthält KldB-Berufshauptgruppen 81–84.
+    "81":  "Medizinische Gesundheitsberufe verbinden Fachwissen, körperliche Versorgung und Patientenkontakt. KI kann Diagnostik, Dokumentation und Entscheidungsunterstützung verbessern; der direkte Versorgungskontakt bleibt menschlich geprägt.",
     "811": "Kinderbetreuung erfordert kontinuierliche körperliche Anwesenheit, nonverbale Kommunikation und Fürsorge — Bereiche, in denen KI kaum substituieren kann. Administrative Aufgaben könnten automatisiert werden.",
     "812": "Sozialarbeiter*innen verbringen viel Zeit mit Beratung, Krisenintervention und Behördenkoordination. Dokumentation und Fallverwaltung sind KI-zugänglich; der direkte Klientenkontakt bleibt menschlich.",
     "813": "Heilerziehungspflege kombiniert pädagogische Facharbeit mit pflegerischer Begleitung. Individuelle Förderplanung kann KI-gestützt werden, der unmittelbare Beziehungsaufbau bleibt durch KI kaum ersetzbar.",
-    # Bildung
-    "82":  "Lehrende sind mit zunehmendem KI-Einsatz konfrontiert: Unterrichtsplanung, Materialerstellung und Feedback können KI-gestützt werden. Der direkte Unterricht und die Beziehungsgestaltung zur Klasse bleiben menschlich geprägt, jedoch ist die Exposition insgesamt höher als in Pflegeberufen.",
+    "82":  "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe sind stark präsenz- und körperbezogen. Planung, Dokumentation und Beratung sind KI-affin; Behandlung, Pflege und persönliche Dienstleistung bleiben nur begrenzt automatisierbar.",
     "821": "Lehrkräfte an allgemeinbildenden Schulen erstellen wissensbasierte Inhalte und geben Feedback — beides KI-affine Tätigkeiten. Die Klassenführung, soziale Begleitung und individuelle Förderung erfordern weiterhin menschliche Präsenz.",
     "822": "Berufliche Bildung verbindet Fachtheorie (KI-zugänglich) mit praktischer Ausbildung an Maschinen und in Betrieben (KI-resistent). Die Exposition ist heterogen je nach Fachrichtung.",
     "823": "Hochschullehrende forschen und lehren überwiegend digital — Literaturauswertung, Manuskripterstellung und Prüfungsbewertung sind KI-affin. Originäre Forschungsideen und Lehrkommunikation bleiben menschliche Domänen.",
     "824": "Kursleitung und außerschulische Bildung ist stark kontextabhängig: digitale Weiterbildung ist hoch KI-exponiert, handwerkliche und sportliche Kurse kaum.",
-    # Pflege
-    "83":  "Pflegeberufe verbinden Fachwissen mit körperlicher Pflege und emotionaler Unterstützung. Diagnostik und Dokumentation sind KI-affin; Grundpflege, Patientenkommunikation und komplexe Situationsbeurteilung erfordern menschliches Urteil.",
+    "83":  "Erziehungs-, Sozial- und hauswirtschaftliche Berufe sind personenbezogen und erfordern Beziehungsgestaltung, situatives Urteil und physische Präsenz. KI kann Fallverwaltung, Dokumentation und Vorbereitung unterstützen.",
     "831": "Krankenpfleger*innen übernehmen sowohl wissensintensive Aufgaben (Medikation, Vitalkontrolle) als auch körperliche Pflegehandlungen. KI kann Entscheidungsunterstützung und Dokumentation verbessern, nicht jedoch Pflege ersetzen.",
     "832": "Rettungssanitäter*innen arbeiten in unvorhersehbaren Notfallsituationen, die physische Präsenz und Schnellentscheidung erfordern. KI-Dispatch und Navigationsunterstützung sind möglich, der Kerneinsatz bleibt menschlich.",
     "833": "Hebammen leisten persönliche Begleitung während Schwangerschaft und Geburt. KI kann Risikoscreening und Dokumentation unterstützen; die direkte Geburtsbegleitung erfordert zwingend menschliche Präsenz.",
-    # Therapie
-    "84":  "Therapeutische Berufe kombinieren diagnostisches Fachwissen (KI-unterstützbar) mit körperlicher Behandlung und therapeutischer Beziehung. Befunddokumentation und Therapieplanung sind KI-zugänglich; die manuelle Behandlung und das therapeutische Verhältnis bleiben menschlich.",
+    "84":  "Lehrende und ausbildende Berufe sind mit KI bei Unterrichtsplanung, Materialerstellung und Feedback stark konfrontiert. Direkte pädagogische Arbeit und Beziehungsgestaltung bleiben menschlich geprägt.",
     "841": "Physiotherapeut*innen arbeiten primär durch körperliche Behandlung — Mobilisation, Massage, Übungsanleitung. KI kann Befunderhebung und Übungsplanung unterstützen, ersetzt aber nicht den Behandlungskontakt.",
     "842": "Ergotherapie ist stark auf individuelle Alltagsanpassung ausgerichtet. Dokumentation und Therapieplanung sind KI-affin; die handlungsbasierte Therapiesitzung erfordert körperliche Ko-Präsenz.",
     "843": "Logopädie kombiniert Sprachdiagnostik (zunehmend KI-gestützt) mit individueller Sprachtherapie. KI-Tools für Sprachanalyse und Übungsrückmeldung sind bereits im Einsatz; der therapeutische Prozess bleibt menschlich.",
@@ -389,7 +355,7 @@ def main():
         "years":       [int(y) for y in all_years],
         "meta": {
             "source":    "Bundesagentur für Arbeit — Beschäftigungsstatistik",
-            "kldb":      "KldB 2010, Berufshauptgruppen 81–88 (Soziales, Bildung, Gesundheit)",
+            "kldb":      "KldB 2010, Berufshauptgruppen 81–84 (Gesundheit, Soziales, Bildung)",
             "wz":        "WZ 2008, Abteilungen 85–88 (Bildung, Gesundheit, Sozialwesen)",
             "stichtag":  "30. Juni (jeweils)",
             "ai_scores": "Adaptiert von BLS Occupational Outlook Handbook (via LLM)",
@@ -400,10 +366,10 @@ def main():
     with open(dest, "w", encoding="utf-8") as f:
         json.dump(output, f, ensure_ascii=False, indent=2)
 
-    total_svb = sum(n["svb"] or 0 for n in kldb_nodes if n["category"] == "kldb" and len(n["id"]) == 3)
+    total_svb = sum(n["svb"] or 0 for n in kldb_nodes if n["category"] == "kldb")
     print(f"Geschrieben: {dest}")
     print(f"  {len(kldb_nodes)} KldB-Nodes, {len(wz_nodes)} WZ-Nodes")
-    print(f"  SVB 3-Steller gesamt: {total_svb:,}")
+    print(f"  SVB KldB gesamt: {total_svb:,}")
     print(f"  Jahre: {all_years or '(keine Daten)'}")
 
 

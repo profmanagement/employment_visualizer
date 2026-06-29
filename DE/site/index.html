@@ -451,7 +451,7 @@ canvas#canvas { display: block; cursor: default; }
     <p>
       Dieses Tool visualisiert Beschäftigungsdaten der
       <a href="https://statistik.arbeitsagentur.de/" target="_blank">Bundesagentur für Arbeit</a>
-      für <b>soziale Dienstleistungsberufe</b> (KldB 2010 Berufshauptgruppen 81 und 83)
+      für <b>Gesundheits-, Sozial- und Bildungsberufe</b> (KldB 2010 Berufshauptgruppen 81–84)
       sowie Wirtschaftszweige des Sozialwesens (WZ 2008 Abteilungen 87/88).
       Rechteckgröße = <b>SVB-Bestand</b> (sozialversicherungspflichtig Beschäftigte).
       <b>Farbe</b> zeigt die gewählte Metrik.
@@ -488,11 +488,10 @@ canvas#canvas { display: block; cursor: default; }
       <h3>Berufsbereich (KldB)</h3>
       <div class="view-toggle" id="sectorToggle">
         <button data-sector="all" class="active">Alle</button>
-        <button data-sector="soziales">Soziales (81)</button>
-        <button data-sector="bildung">Bildung (82)</button>
-        <button data-sector="pflege">Pflege (83)</button>
-        <button data-sector="therapie">Therapie (84)</button>
-        <button data-sector="medizin">Medizin (85–88)</button>
+        <button data-sector="medizin">Medizinisch (81)</button>
+        <button data-sector="pflege">Pflege & Körperpflege (82)</button>
+        <button data-sector="soziales">Soziales & Erziehung (83)</button>
+        <button data-sector="bildung">Bildung (84)</button>
       </div>
     </div>
     <div class="stat-section">
@@ -543,7 +542,7 @@ canvas#canvas { display: block; cursor: default; }
       <div class="kf-icon">📈</div>
       <div class="kf-stat">+35 %</div>
       <div class="kf-title">Beschäftigungswachstum 2013–2023</div>
-      <p class="kf-text">Soziale Dienstleistungsberufe (KldB 81/83) zählen zu den am stärksten wachsenden Berufsfeldern. Heilerziehungspflege (+45 %) und Kinderbetreuung (+38 %) führen das Wachstum an — getrieben durch Kita-Ausbau, Pflegereformen und demografischen Wandel.</p>
+      <p class="kf-text">Gesundheits-, Sozial- und Bildungsberufe (KldB 81–84) zählen zu den stark wachsenden Berufsfeldern. Der Zuwachs wird durch demografischen Wandel, Ausbau sozialer Infrastruktur und steigende Bildungs- und Pflegebedarfe getragen.</p>
       <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
@@ -687,7 +686,7 @@ canvas#canvas { display: block; cursor: default; }
         <div class="meth-num">2</div>
         <div>
           <div class="meth-title">Parsen — <code>parse_ba.py</code></div>
-          <p>Die Excel-Dateien enthalten 5–7 Metadaten-Kopfzeilen. Das Parse-Skript (pandas) überspringt diese, normalisiert Spaltennamen (SVB gesamt, Frauen, Teilzeit, Geringfügig), filtert auf KldB-Berufshauptgruppen 81–88 und WZ-Abteilungen 85–88 und schreibt bereinigte CSVs für alle verfügbaren Jahrgänge (2013–heute, Stichtag 30. Juni).</p>
+          <p>Die aktuellen BA-Zeitreihen liegen als Excel-Dateien mit Quartalen in Zeilen und KldB-/WZ-Codes in Spalten vor. Das Parse-Skript (pandas) normalisiert SVB gesamt, Männer, Frauen und geringfügig Beschäftigte, filtert auf KldB-Berufshauptgruppen 81–84 und WZ-Abteilungen 85–88 und schreibt bereinigte CSVs für alle verfügbaren Jahrgänge (2013–heute, Stichtag 30. Juni).</p>
         </div>
       </div>
       <div class="meth-step">
@@ -710,14 +709,10 @@ canvas#canvas { display: block; cursor: default; }
       <div class="meth-codes-col">
         <div class="meth-codes-title">KldB 2010 — Berufshauptgruppen</div>
         <table>
-          <tr><td>81</td><td>Erziehung, soziale Arbeit, Heilerziehungspflege</td></tr>
-          <tr><td>82</td><td>Lehrende und Ausbildende</td></tr>
-          <tr><td>83</td><td>Gesundheits- u. Krankenpflege, Rettungsdienst</td></tr>
-          <tr><td>84</td><td>Therapie und Heilpraktik</td></tr>
-          <tr><td>85</td><td>Human- und Zahnmedizin, Tiermedizin</td></tr>
-          <tr><td>86</td><td>Psychologie, nichtärztl. Psychotherapie</td></tr>
-          <tr><td>87</td><td>Pharmazie</td></tr>
-          <tr><td>88</td><td>Medizintechnik, Orthoptik, Audiologie</td></tr>
+          <tr><td>81</td><td>Medizinische Gesundheitsberufe</td></tr>
+          <tr><td>82</td><td>Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe</td></tr>
+          <tr><td>83</td><td>Erziehung, soziale und hauswirtschaftliche Berufe, Theologie</td></tr>
+          <tr><td>84</td><td>Lehrende und ausbildende Berufe</td></tr>
         </table>
       </div>
       <div class="meth-codes-col">
@@ -1057,11 +1052,10 @@ const MARGIN = 12, GAP = 1.5;
 let sectorFilter = "all";
 
 const SECTOR_PREFIXES = {
-  soziales: ["81"],
-  bildung:  ["82"],
-  pflege:   ["83"],
-  therapie: ["84"],
-  medizin:  ["85", "86", "87", "88"],
+  medizin:  ["81"],
+  pflege:   ["82"],
+  soziales: ["83"],
+  bildung:  ["84"],
 };
 
 function filteredData() {

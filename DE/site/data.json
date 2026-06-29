@@ -2,420 +2,75 @@
   "nodes": [
     {
       "id": "81",
-      "label": "Erziehung, soziale Arbeit, Heilerziehungspflege",
+      "label": "Medizinische Gesundheitsberufe",
       "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 2923892,
+      "svb_year": 2025,
+      "anteil_frauen": 0.8043,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.1003,
+      "wachstum_gesamt_pct": 31.3,
+      "cagr_pct": 2.3,
       "exposure": 4,
-      "exposure_bls_title": "Social workers",
-      "exposure_rationale": "Berufe in Erziehung und sozialer Arbeit sind stark personenbezogen und erfordern physische Präsenz sowie emotionale Kompetenz. KI kann administrative Aufgaben und Dokumentation übernehmen, der Kernbereich menschlicher Beziehungsarbeit bleibt jedoch weitgehend geschützt."
-    },
-    {
-      "id": "811",
-      "label": "Kinderbetreuung und -erziehung",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 2,
-      "exposure_bls_title": "Childcare workers",
-      "exposure_rationale": "Kinderbetreuung erfordert kontinuierliche körperliche Anwesenheit, nonverbale Kommunikation und Fürsorge — Bereiche, in denen KI kaum substituieren kann. Administrative Aufgaben könnten automatisiert werden."
-    },
-    {
-      "id": "812",
-      "label": "Sozialarbeit, Sozialpädagogik",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 4,
-      "exposure_bls_title": "Social workers",
-      "exposure_rationale": "Sozialarbeiter*innen verbringen viel Zeit mit Beratung, Krisenintervention und Behördenkoordination. Dokumentation und Fallverwaltung sind KI-zugänglich; der direkte Klientenkontakt bleibt menschlich."
-    },
-    {
-      "id": "813",
-      "label": "Heilerziehungspflege, Sonderpädagogik",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Special education teachers",
-      "exposure_rationale": "Heilerziehungspflege kombiniert pädagogische Facharbeit mit pflegerischer Begleitung. Individuelle Förderplanung kann KI-gestützt werden, der unmittelbare Beziehungsaufbau bleibt durch KI kaum ersetzbar."
+      "exposure_bls_title": "Registered nurses",
+      "exposure_rationale": "Medizinische Gesundheitsberufe verbinden Fachwissen, körperliche Versorgung und Patientenkontakt. KI kann Diagnostik, Dokumentation und Entscheidungsunterstützung verbessern; der direkte Versorgungskontakt bleibt menschlich geprägt."
     },
     {
       "id": "82",
-      "label": "Lehrende und Ausbildende",
+      "label": "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe",
       "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 978128,
+      "svb_year": 2025,
+      "anteil_frauen": 0.7705,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 7,
-      "exposure_bls_title": "High school teachers",
-      "exposure_rationale": "Lehrende sind mit zunehmendem KI-Einsatz konfrontiert: Unterrichtsplanung, Materialerstellung und Feedback können KI-gestützt werden. Der direkte Unterricht und die Beziehungsgestaltung zur Klasse bleiben menschlich geprägt, jedoch ist die Exposition insgesamt höher als in Pflegeberufen."
-    },
-    {
-      "id": "821",
-      "label": "Lehrtätigkeit allgemeinbildende Schulen",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 7,
-      "exposure_bls_title": "High school teachers",
-      "exposure_rationale": "Lehrkräfte an allgemeinbildenden Schulen erstellen wissensbasierte Inhalte und geben Feedback — beides KI-affine Tätigkeiten. Die Klassenführung, soziale Begleitung und individuelle Förderung erfordern weiterhin menschliche Präsenz."
-    },
-    {
-      "id": "822",
-      "label": "Lehrtätigkeit berufsbildende Schulen",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 6,
-      "exposure_bls_title": "Middle school teachers",
-      "exposure_rationale": "Berufliche Bildung verbindet Fachtheorie (KI-zugänglich) mit praktischer Ausbildung an Maschinen und in Betrieben (KI-resistent). Die Exposition ist heterogen je nach Fachrichtung."
-    },
-    {
-      "id": "823",
-      "label": "Hochschullehre und -forschung",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 7,
-      "exposure_bls_title": "Postsecondary teachers",
-      "exposure_rationale": "Hochschullehrende forschen und lehren überwiegend digital — Literaturauswertung, Manuskripterstellung und Prüfungsbewertung sind KI-affin. Originäre Forschungsideen und Lehrkommunikation bleiben menschliche Domänen."
-    },
-    {
-      "id": "824",
-      "label": "Außerschulische Bildung, Kursleitung",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "Preschool teachers",
-      "exposure_rationale": "Kursleitung und außerschulische Bildung ist stark kontextabhängig: digitale Weiterbildung ist hoch KI-exponiert, handwerkliche und sportliche Kurse kaum."
+      "anteil_geringfuegig": 0.145,
+      "wachstum_gesamt_pct": 26.4,
+      "cagr_pct": 1.97,
+      "exposure": 2,
+      "exposure_bls_title": "Nursing assistants and orderlies",
+      "exposure_rationale": "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe sind stark präsenz- und körperbezogen. Planung, Dokumentation und Beratung sind KI-affin; Behandlung, Pflege und persönliche Dienstleistung bleiben nur begrenzt automatisierbar."
     },
     {
       "id": "83",
-      "label": "Gesundheits- u. Krankenpflege, Rettungsdienst, Geburtshilfe",
+      "label": "Erziehung, soziale und hauswirtschaftliche Berufe, Theologie",
       "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 2197486,
+      "svb_year": 2025,
+      "anteil_frauen": 0.8379,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.0949,
+      "wachstum_gesamt_pct": 59.2,
+      "cagr_pct": 3.95,
       "exposure": 4,
-      "exposure_bls_title": "Registered nurses",
-      "exposure_rationale": "Pflegeberufe verbinden Fachwissen mit körperlicher Pflege und emotionaler Unterstützung. Diagnostik und Dokumentation sind KI-affin; Grundpflege, Patientenkommunikation und komplexe Situationsbeurteilung erfordern menschliches Urteil."
-    },
-    {
-      "id": "831",
-      "label": "Gesundheits- und Krankenpflege",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 4,
-      "exposure_bls_title": "Registered nurses",
-      "exposure_rationale": "Krankenpfleger*innen übernehmen sowohl wissensintensive Aufgaben (Medikation, Vitalkontrolle) als auch körperliche Pflegehandlungen. KI kann Entscheidungsunterstützung und Dokumentation verbessern, nicht jedoch Pflege ersetzen."
-    },
-    {
-      "id": "832",
-      "label": "Rettungsdienst",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "EMTs and paramedics",
-      "exposure_rationale": "Rettungssanitäter*innen arbeiten in unvorhersehbaren Notfallsituationen, die physische Präsenz und Schnellentscheidung erfordern. KI-Dispatch und Navigationsunterstützung sind möglich, der Kerneinsatz bleibt menschlich."
-    },
-    {
-      "id": "833",
-      "label": "Geburtshilfe (Hebammen)",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Nurse anesthetists, nurse midwives, and nurse practitioners",
-      "exposure_rationale": "Hebammen leisten persönliche Begleitung während Schwangerschaft und Geburt. KI kann Risikoscreening und Dokumentation unterstützen; die direkte Geburtsbegleitung erfordert zwingend menschliche Präsenz."
+      "exposure_bls_title": "Social workers",
+      "exposure_rationale": "Erziehungs-, Sozial- und hauswirtschaftliche Berufe sind personenbezogen und erfordern Beziehungsgestaltung, situatives Urteil und physische Präsenz. KI kann Fallverwaltung, Dokumentation und Vorbereitung unterstützen."
     },
     {
       "id": "84",
-      "label": "Therapie und Heilpraktik",
+      "label": "Lehrende und ausbildende Berufe",
       "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 758681,
+      "svb_year": 2025,
+      "anteil_frauen": 0.5579,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "Physical therapists",
-      "exposure_rationale": "Therapeutische Berufe kombinieren diagnostisches Fachwissen (KI-unterstützbar) mit körperlicher Behandlung und therapeutischer Beziehung. Befunddokumentation und Therapieplanung sind KI-zugänglich; die manuelle Behandlung und das therapeutische Verhältnis bleiben menschlich."
-    },
-    {
-      "id": "841",
-      "label": "Physiotherapie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "Physical therapists",
-      "exposure_rationale": "Physiotherapeut*innen arbeiten primär durch körperliche Behandlung — Mobilisation, Massage, Übungsanleitung. KI kann Befunderhebung und Übungsplanung unterstützen, ersetzt aber nicht den Behandlungskontakt."
-    },
-    {
-      "id": "842",
-      "label": "Ergotherapie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "Occupational therapists",
-      "exposure_rationale": "Ergotherapie ist stark auf individuelle Alltagsanpassung ausgerichtet. Dokumentation und Therapieplanung sind KI-affin; die handlungsbasierte Therapiesitzung erfordert körperliche Ko-Präsenz."
-    },
-    {
-      "id": "843",
-      "label": "Logopädie, Sprachtherapie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Speech-language pathologists",
-      "exposure_rationale": "Logopädie kombiniert Sprachdiagnostik (zunehmend KI-gestützt) mit individueller Sprachtherapie. KI-Tools für Sprachanalyse und Übungsrückmeldung sind bereits im Einsatz; der therapeutische Prozess bleibt menschlich."
-    },
-    {
-      "id": "85",
-      "label": "Human- und Zahnmedizin, Tiermedizin",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Physicians and surgeons",
-      "exposure_rationale": "Ärztliche Berufe sind stärker KI-exponiert als Pflegeberufe: Diagnostik, Bildauswertung und Literaturrecherche sind hochgradig KI-affin. Operativer und invasiver Eingriff sowie Patientenkommunikation erfordern weiterhin menschliches Urteil und Präsenz."
-    },
-    {
-      "id": "851",
-      "label": "Humanmedizin (Ärzt*innen)",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Physicians and surgeons",
-      "exposure_rationale": "Ärzt*innen sind mit schnell wachsenden KI-Fähigkeiten konfrontiert: Radiologiebefunde, Pathologiediagnosen und klinische Entscheidungsunterstützung werden KI-gestützt. Arzt-Patienten-Gespräch, ethische Abwägung und operative Eingriffe bleiben menschlich."
-    },
-    {
-      "id": "852",
-      "label": "Zahnmedizin",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 3,
-      "exposure_bls_title": "Dentists",
-      "exposure_rationale": "Zahnärzt*innen arbeiten überwiegend körperlich-manuell. Diagnostik (Röntgenauswertung) ist KI-zugänglich; Behandlung am Patienten erfordert manuelle Präzision und persönliche Beziehung."
-    },
-    {
-      "id": "853",
-      "label": "Tiermedizin",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 4,
-      "exposure_bls_title": "Veterinarians",
-      "exposure_rationale": "Tierärzt*innen kombinieren klinische Diagnostik mit manueller Behandlung und Chirurgie. KI kann Bilddiagnostik und Anamnese unterstützen; physische Untersuchung und operative Eingriffe bleiben menschliche Domäne."
-    },
-    {
-      "id": "86",
-      "label": "Psychologie, nichtärztliche Psychotherapie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 6,
-      "exposure_bls_title": "Psychologists",
-      "exposure_rationale": "Psychologische Berufe sind zweigespalten: wissensintensive Diagnostik und Gutachtenerstellung sind hoch KI-exponiert; die therapeutische Beziehung und klinische Einschätzung komplexer Lebenssituationen bleiben menschlich geprägt."
-    },
-    {
-      "id": "861",
-      "label": "Psychologische Beratung und Therapie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 6,
-      "exposure_bls_title": "Psychologists",
-      "exposure_rationale": "Psychologische Beratung und Therapie basiert auf vertrauensvoller Beziehungsarbeit. KI kann Diagnostikinstrumente und Dokumentation unterstützen; die therapeutische Interaktion selbst hat einen erheblichen menschlichen Schutz."
-    },
-    {
-      "id": "87",
-      "label": "Pharmazie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Pharmacists",
-      "exposure_rationale": "Apotheker*innen übernehmen zunehmend beratungsintensive Aufgaben, da Dispensierung und Logistik automatisierbar sind. Arzneimittelinteraktionsprüfung ist KI-affin; persönliche Beratung und Medikationsmanagement bleiben menschlich."
-    },
-    {
-      "id": "871",
-      "label": "Apotheke und Pharmaberatung",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 5,
-      "exposure_bls_title": "Pharmacists",
-      "exposure_rationale": "Apothekenarbeit ist eine Mischung aus digitaler Datenverwaltung (KI-zugänglich) und persönlicher Beratung (menschlich). Routineaufgaben in der Logistik können vollständig automatisiert werden."
-    },
-    {
-      "id": "88",
-      "label": "Medizintechnik, Orthoptik, Audiologie",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 6,
-      "exposure_bls_title": "Health education specialists",
-      "exposure_rationale": "Medizintechnische Berufe verbinden technisches Fachwissen mit praktischer Anwendung an Patient*innen. Geräteauswertung und Dokumentation sind KI-affin; Bedienung, Kalibrierung und Patientenbegleitung erfordern Präsenz."
-    },
-    {
-      "id": "881",
-      "label": "Medizintechnischer Dienst",
-      "category": "kldb",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
-      "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
-      "exposure": 6,
-      "exposure_bls_title": "Health education specialists",
-      "exposure_rationale": "Medizintechniker*innen warten und bedienen diagnostische Geräte. Auswertungsalgorithmen sind KI-affin; technische Wartung und Patientenkontakt bleiben körperlich."
+      "anteil_geringfuegig": 0.2151,
+      "wachstum_gesamt_pct": 33.1,
+      "cagr_pct": 2.41,
+      "exposure": 7,
+      "exposure_bls_title": "High school teachers",
+      "exposure_rationale": "Lehrende und ausbildende Berufe sind mit KI bei Unterrichtsplanung, Materialerstellung und Feedback stark konfrontiert. Direkte pädagogische Arbeit und Beziehungsgestaltung bleiben menschlich geprägt."
     },
     {
       "id": "85",
       "label": "Erziehung und Unterricht (WZ 85)",
       "category": "wz",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 1477479,
+      "svb_year": 2025,
+      "anteil_frauen": 0.7217,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.1466,
+      "wachstum_gesamt_pct": 31.5,
+      "cagr_pct": 2.31,
       "exposure": 7,
       "exposure_bls_title": "High school teachers",
       "exposure_rationale": "Der Bildungssektor steht KI-bedingten Veränderungen gegenüber: Unterrichtsmaterialien, Prüfungsbewertung und Lernstandsdiagnose sind KI-zugänglich. Direkte Lehr- und Erziehungsarbeit sowie schulisches Beziehungsgeschehen bleiben menschlich geprägt."
@@ -484,13 +139,13 @@
       "id": "86",
       "label": "Gesundheitswesen (WZ 86)",
       "category": "wz",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 2827645,
+      "svb_year": 2025,
+      "anteil_frauen": 0.7925,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.1432,
+      "wachstum_gesamt_pct": 28.1,
+      "cagr_pct": 2.08,
       "exposure": 5,
       "exposure_bls_title": "Physicians and surgeons",
       "exposure_rationale": "Das Gesundheitswesen insgesamt ist mittelstark KI-exponiert: Diagnostik, Bildauswertung und Dokumentation verändern sich stark; körperliche Behandlung und Patientenbeziehung bleiben menschlich."
@@ -544,13 +199,13 @@
       "id": "87",
       "label": "Heime (WZ 87)",
       "category": "wz",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 1135447,
+      "svb_year": 2025,
+      "anteil_frauen": 0.7785,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.0975,
+      "wachstum_gesamt_pct": 24.0,
+      "cagr_pct": 1.81,
       "exposure": 2,
       "exposure_bls_title": "Nursing assistants and orderlies",
       "exposure_rationale": "Heime beschäftigen überwiegend Pflegehilfskräfte und Fachkräfte in der Grundpflege. Körperliche Präsenz ist Kernkompetenz; Dienstplanung und Pflegedokumentation sind KI-zugänglich."
@@ -604,13 +259,13 @@
       "id": "88",
       "label": "Sozialwesen ohne Unterkunft (WZ 88)",
       "category": "wz",
-      "svb": null,
-      "svb_year": null,
-      "anteil_frauen": null,
+      "svb": 1565919,
+      "svb_year": 2025,
+      "anteil_frauen": 0.6989,
       "anteil_teilzeit": null,
-      "anteil_geringfuegig": null,
-      "wachstum_gesamt_pct": null,
-      "cagr_pct": null,
+      "anteil_geringfuegig": 0.1327,
+      "wachstum_gesamt_pct": 52.1,
+      "cagr_pct": 3.55,
       "exposure": 4,
       "exposure_bls_title": "Social workers",
       "exposure_rationale": "Das Sozialwesen ohne Unterkunft umfasst Beratung, ambulante Hilfen und Gemeinwesenprojekte. KI kann Fallverwaltung und Berichtswesen übernehmen; direkte Beziehungsarbeit bleibt menschlich."
@@ -661,11 +316,482 @@
       "exposure_rationale": "Der gesamte Gesundheits- und Sozialbereich ist eine Mischung aus wissensintensiver Arbeit und körperlicher Dienstleistung. KI verändert Dokumentation, Diagnostik und Verwaltung erheblich, während direkte Patientenversorgung menschliche Präsenz erfordert."
     }
   ],
-  "timeseries": [],
-  "years": [],
+  "timeseries": [
+    {
+      "id": "81",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 2226493
+        },
+        {
+          "year": 2014,
+          "svb": 2292092
+        },
+        {
+          "year": 2015,
+          "svb": 2347031
+        },
+        {
+          "year": 2016,
+          "svb": 2402731
+        },
+        {
+          "year": 2017,
+          "svb": 2461466
+        },
+        {
+          "year": 2018,
+          "svb": 2518367
+        },
+        {
+          "year": 2019,
+          "svb": 2583177
+        },
+        {
+          "year": 2020,
+          "svb": 2636803
+        },
+        {
+          "year": 2021,
+          "svb": 2728668
+        },
+        {
+          "year": 2022,
+          "svb": 2771463
+        },
+        {
+          "year": 2023,
+          "svb": 2799541
+        },
+        {
+          "year": 2024,
+          "svb": 2856845
+        },
+        {
+          "year": 2025,
+          "svb": 2923892
+        }
+      ]
+    },
+    {
+      "id": "82",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 773778
+        },
+        {
+          "year": 2014,
+          "svb": 803218
+        },
+        {
+          "year": 2015,
+          "svb": 832780
+        },
+        {
+          "year": 2016,
+          "svb": 860280
+        },
+        {
+          "year": 2017,
+          "svb": 890327
+        },
+        {
+          "year": 2018,
+          "svb": 915356
+        },
+        {
+          "year": 2019,
+          "svb": 936207
+        },
+        {
+          "year": 2020,
+          "svb": 948681
+        },
+        {
+          "year": 2021,
+          "svb": 956665
+        },
+        {
+          "year": 2022,
+          "svb": 959160
+        },
+        {
+          "year": 2023,
+          "svb": 955631
+        },
+        {
+          "year": 2024,
+          "svb": 961147
+        },
+        {
+          "year": 2025,
+          "svb": 978128
+        }
+      ]
+    },
+    {
+      "id": "83",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 1379901
+        },
+        {
+          "year": 2014,
+          "svb": 1451211
+        },
+        {
+          "year": 2015,
+          "svb": 1528076
+        },
+        {
+          "year": 2016,
+          "svb": 1626737
+        },
+        {
+          "year": 2017,
+          "svb": 1694746
+        },
+        {
+          "year": 2018,
+          "svb": 1761713
+        },
+        {
+          "year": 2019,
+          "svb": 1819845
+        },
+        {
+          "year": 2020,
+          "svb": 1873352
+        },
+        {
+          "year": 2021,
+          "svb": 1951666
+        },
+        {
+          "year": 2022,
+          "svb": 2013763
+        },
+        {
+          "year": 2023,
+          "svb": 2068478
+        },
+        {
+          "year": 2024,
+          "svb": 2134217
+        },
+        {
+          "year": 2025,
+          "svb": 2197486
+        }
+      ]
+    },
+    {
+      "id": "84",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 569851
+        },
+        {
+          "year": 2014,
+          "svb": 586473
+        },
+        {
+          "year": 2015,
+          "svb": 599180
+        },
+        {
+          "year": 2016,
+          "svb": 617792
+        },
+        {
+          "year": 2017,
+          "svb": 641235
+        },
+        {
+          "year": 2018,
+          "svb": 657560
+        },
+        {
+          "year": 2019,
+          "svb": 672483
+        },
+        {
+          "year": 2020,
+          "svb": 679152
+        },
+        {
+          "year": 2021,
+          "svb": 698571
+        },
+        {
+          "year": 2022,
+          "svb": 728825
+        },
+        {
+          "year": 2023,
+          "svb": 736550
+        },
+        {
+          "year": 2024,
+          "svb": 750430
+        },
+        {
+          "year": 2025,
+          "svb": 758681
+        }
+      ]
+    },
+    {
+      "id": "85",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 1123699
+        },
+        {
+          "year": 2014,
+          "svb": 1158945
+        },
+        {
+          "year": 2015,
+          "svb": 1169902
+        },
+        {
+          "year": 2016,
+          "svb": 1205178
+        },
+        {
+          "year": 2017,
+          "svb": 1249260
+        },
+        {
+          "year": 2018,
+          "svb": 1273484
+        },
+        {
+          "year": 2019,
+          "svb": 1305554
+        },
+        {
+          "year": 2020,
+          "svb": 1334257
+        },
+        {
+          "year": 2021,
+          "svb": 1372757
+        },
+        {
+          "year": 2022,
+          "svb": 1417061
+        },
+        {
+          "year": 2023,
+          "svb": 1430776
+        },
+        {
+          "year": 2024,
+          "svb": 1461208
+        },
+        {
+          "year": 2025,
+          "svb": 1477479
+        }
+      ]
+    },
+    {
+      "id": "86",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 2207477
+        },
+        {
+          "year": 2014,
+          "svb": 2257108
+        },
+        {
+          "year": 2015,
+          "svb": 2300196
+        },
+        {
+          "year": 2016,
+          "svb": 2347188
+        },
+        {
+          "year": 2017,
+          "svb": 2397172
+        },
+        {
+          "year": 2018,
+          "svb": 2447432
+        },
+        {
+          "year": 2019,
+          "svb": 2510364
+        },
+        {
+          "year": 2020,
+          "svb": 2562666
+        },
+        {
+          "year": 2021,
+          "svb": 2641824
+        },
+        {
+          "year": 2022,
+          "svb": 2686005
+        },
+        {
+          "year": 2023,
+          "svb": 2705707
+        },
+        {
+          "year": 2024,
+          "svb": 2763126
+        },
+        {
+          "year": 2025,
+          "svb": 2827645
+        }
+      ]
+    },
+    {
+      "id": "87",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 915485
+        },
+        {
+          "year": 2014,
+          "svb": 933602
+        },
+        {
+          "year": 2015,
+          "svb": 963813
+        },
+        {
+          "year": 2016,
+          "svb": 993326
+        },
+        {
+          "year": 2017,
+          "svb": 1021303
+        },
+        {
+          "year": 2018,
+          "svb": 1039097
+        },
+        {
+          "year": 2019,
+          "svb": 1056143
+        },
+        {
+          "year": 2020,
+          "svb": 1067766
+        },
+        {
+          "year": 2021,
+          "svb": 1083119
+        },
+        {
+          "year": 2022,
+          "svb": 1080974
+        },
+        {
+          "year": 2023,
+          "svb": 1086794
+        },
+        {
+          "year": 2024,
+          "svb": 1105422
+        },
+        {
+          "year": 2025,
+          "svb": 1135447
+        }
+      ]
+    },
+    {
+      "id": "88",
+      "data": [
+        {
+          "year": 2013,
+          "svb": 1029749
+        },
+        {
+          "year": 2014,
+          "svb": 1074658
+        },
+        {
+          "year": 2015,
+          "svb": 1120797
+        },
+        {
+          "year": 2016,
+          "svb": 1201007
+        },
+        {
+          "year": 2017,
+          "svb": 1257561
+        },
+        {
+          "year": 2018,
+          "svb": 1307170
+        },
+        {
+          "year": 2019,
+          "svb": 1349842
+        },
+        {
+          "year": 2020,
+          "svb": 1383601
+        },
+        {
+          "year": 2021,
+          "svb": 1437793
+        },
+        {
+          "year": 2022,
+          "svb": 1468341
+        },
+        {
+          "year": 2023,
+          "svb": 1494579
+        },
+        {
+          "year": 2024,
+          "svb": 1525529
+        },
+        {
+          "year": 2025,
+          "svb": 1565919
+        }
+      ]
+    }
+  ],
+  "years": [
+    2013,
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025
+  ],
   "meta": {
     "source": "Bundesagentur für Arbeit — Beschäftigungsstatistik",
-    "kldb": "KldB 2010, Berufshauptgruppen 81–88 (Soziales, Bildung, Gesundheit)",
+    "kldb": "KldB 2010, Berufshauptgruppen 81–84 (Gesundheit, Soziales, Bildung)",
     "wz": "WZ 2008, Abteilungen 85–88 (Bildung, Gesundheit, Sozialwesen)",
     "stichtag": "30. Juni (jeweils)",
     "ai_scores": "Adaptiert von BLS Occupational Outlook Handbook (via LLM)"

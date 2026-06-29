@@ -3,8 +3,8 @@ Liest BA-Excel-Tabellen (KldB + WZ), filtert auf relevante Berufsgruppen
 und schreibt bereinigte CSVs nach DE/data/processed/.
 
 Unterstützte Kategorien:
-  sozbe-kldb-blk    → BHG 81–88 Soziales, Bildung, Gesundheit (Bund + Länder)
-  sozbe-kldb-kreis  → BHG 81–88 (Kreise)
+  sozbe-kldb-blk    → BHG 81–84 Gesundheit, Soziales, Bildung (Bund)
+  sozbe-kldb-kreis  → BHG 81–84 (Kreise, falls verfügbar)
   sozbe-wz-blk      → WZ 85–88 Bildung, Gesundheit, Sozialwesen (Bund + Länder)
   sozbe-wz-kreis    → WZ 85–88 (Kreise)
 
@@ -12,13 +12,11 @@ Verwendung:
     uv run python DE/parse_ba.py
 
 Hinweis:
-    BA-Excel-Dateien variieren im internen Aufbau je nach Jahrgang.
-    Falls der erste Durchlauf keine Zeilen liefert, bitte Header-Zeilen-
-    Nummer (HEADER_ROW) und Spaltennamen-Mappings unten anpassen.
+    Aktuelle BA-Zeitreihen liegen als Wide-Excel vor: Jahre/Monate in Zeilen,
+    KldB-/WZ-Codes in Spalten. Ältere Long-Formate werden weiterhin versucht.
 """
 
 import re
-import sys
 from pathlib import Path
 
 import pandas as pd
@@ -28,9 +26,10 @@ PROC_DIR = Path(__file__).parent / "data" / "processed"
 PROC_DIR.mkdir(parents=True, exist_ok=True)
 
 # Zu filternde Codes
-# KldB: Soziales (81), Lehrende (82), Pflege (83), Therapie (84),
-#        Medizin (85), Pharmazie (86), Psychologie (87), Medizintechnik (88)
-KLDB_PREFIXES = ("81", "82", "83", "84", "85", "86", "87", "88")
+# KldB 2010 Berufshauptgruppen in der aktuellen BA-Zeitreihe:
+# 81 medizinische Gesundheitsberufe, 82 nichtmedizinische Gesundheit/Körperpflege,
+# 83 Erziehung/Soziales/Hauswirtschaft/Theologie, 84 Lehrende.
+KLDB_PREFIXES = ("81", "82", "83", "84")
 # WZ: Erziehung/Unterricht (85), Gesundheitswesen (86), Heime (87),
 #     Sozialwesen (88)
 WZ_PREFIXES   = ("85", "86", "87", "88", "Q")
@@ -55,6 +54,13 @@ COLUMN_MAP_CANDIDATES = {
     "gb_gesamt":    ["Geringfügig Beschäftigte", "GB insgesamt", "GB_gesamt", "Geringfügig"],
 }
 
+WIDE_METRIC_SHEETS = {
+    "1": "svb_gesamt",
+    "1.1": "svb_maenner",
+    "1.2": "svb_frauen",
+    "3": "gb_gesamt",
+}
+
 
 def year_from_path(p: Path) -> int:
     """Extrahiert Jahrgang aus BA-Dateinamen, z.B. '...202406...' → 2024."""
@@ -73,6 +79,122 @@ def find_col(df: pd.DataFrame, candidates: list[str]) -> str | None:
             if c.lower() in str(col).lower():
                 return col
     return None
+
+
+def is_current_wide_timeseries(path: Path) -> bool:
+    name = path.name.lower()
+    return "kldb2010-zeitreihe" in name or "wz2008-zeitreihe" in name
+
+
+def code_from_label(value: object, prefixes: tuple[str, ...]) -> str | None:
+    text = str(value).replace("\n", " ").strip()
+    match = re.match(r"^([A-Z]|\d{2,3}(?:\.\d)?)\b", text)
+    if not match:
+        return None
+    code = match.group(1)
+    if code.startswith(prefixes):
+        return code
+    return None
+
+
+def label_without_code(value: object, code: str) -> str:
+    text = re.sub(r"\s+", " ", str(value).replace("\n", " ")).strip()
+    return text[len(code):].strip(" -")
+
+
+def clean_number(value: object) -> float | None:
+    if pd.isna(value):
+        return None
+    text = str(value).strip()
+    if not text or text in {"*", "-", "x", "X"}:
+        return None
+    return pd.to_numeric(re.sub(r"[\s.]", "", text), errors="coerce")
+
+
+def find_wide_header_row(df: pd.DataFrame, prefixes: tuple[str, ...]) -> int | None:
+    best_row, best_count = None, 0
+    for idx in range(min(20, len(df))):
+        count = sum(1 for value in df.iloc[idx] if code_from_label(value, prefixes))
+        if count > best_count:
+            best_row, best_count = idx, count
+    return best_row if best_count > 0 else None
+
+
+def read_wide_metric_sheet(path: Path, sheet_name: str, metric: str, prefixes: tuple[str, ...]) -> pd.DataFrame:
+    df = pd.read_excel(path, sheet_name=sheet_name, header=None, dtype=object)
+    header_row = find_wide_header_row(df, prefixes)
+    if header_row is None:
+        return pd.DataFrame()
+
+    code_columns: list[tuple[int, str, str]] = []
+    for col_idx, value in enumerate(df.iloc[header_row]):
+        code = code_from_label(value, prefixes)
+        if code:
+            code_columns.append((col_idx, code, label_without_code(value, code)))
+
+    if not code_columns:
+        return pd.DataFrame()
+
+    rows = df.iloc[header_row + 2:].copy()
+    raw_year = (
+        rows.iloc[:, 0]
+        .astype(str)
+        .str.replace("'", "", regex=False)
+        .str.strip()
+        .replace({"": pd.NA, "nan": pd.NA})
+    )
+    year = pd.to_numeric(raw_year.ffill(), errors="coerce")
+    month = (
+        rows.iloc[:, 1]
+        .astype(str)
+        .str.replace("'", "", regex=False)
+        .str.strip()
+    )
+    keep = year.notna() & month.eq("Juni")
+    rows = rows[keep].copy()
+    year = year[keep].astype(int)
+
+    records = []
+    for row_idx, row in rows.iterrows():
+        row_year = int(year.loc[row_idx])
+        for col_idx, code, label in code_columns:
+            records.append({
+                "code": code,
+                "year": row_year,
+                "bezeichnung": label,
+                "source_file": path.name,
+                metric: clean_number(row.iloc[col_idx]),
+            })
+
+    return pd.DataFrame.from_records(records)
+
+
+def read_wide_timeseries_excel(path: Path, prefixes: tuple[str, ...]) -> pd.DataFrame:
+    frames = []
+    for sheet_name, metric in WIDE_METRIC_SHEETS.items():
+        try:
+            frame = read_wide_metric_sheet(path, sheet_name, metric, prefixes)
+        except ValueError:
+            continue
+        except Exception as e:
+            print(f"    WARN wide sheet {sheet_name}: {e}")
+            continue
+        if not frame.empty:
+            frames.append(frame)
+
+    if not frames:
+        return pd.DataFrame()
+
+    combined = frames[0]
+    keys = ["code", "year", "bezeichnung", "source_file"]
+    for frame in frames[1:]:
+        combined = combined.merge(frame, on=keys, how="outer")
+
+    for col in COLUMN_MAP_CANDIDATES:
+        if col not in combined.columns:
+            combined[col] = pd.NA
+
+    return combined
 
 
 def read_ba_excel(path: Path, code_col_candidates: list[str], prefixes: tuple) -> pd.DataFrame | None:
@@ -149,6 +271,15 @@ def process_category(
     frames = []
     for xlsx in xlsx_files:
         print(f"  Lese: {xlsx.name}")
+        if is_current_wide_timeseries(xlsx):
+            normed = read_wide_timeseries_excel(xlsx, prefixes)
+            if normed.empty:
+                print("    WARN: Keine passenden Zeitreihen-Spalten gefunden")
+                continue
+            print(f"    → {len(normed)} Zeilen, Jahre {normed['year'].min()}–{normed['year'].max()}")
+            frames.append(normed)
+            continue
+
         result, code_col = read_ba_excel(xlsx, code_col_candidates, prefixes)
         if result is None or len(result) == 0:
             print(f"    WARN: Keine passenden Zeilen gefunden (Header/Spaltennamen prüfen)")
@@ -163,6 +294,7 @@ def process_category(
 
     combined = pd.concat(frames, ignore_index=True)
     combined = combined[combined["year"] >= 2013]
+    combined = combined.drop_duplicates(["code", "year"], keep="last")
     combined = combined.sort_values(["code", "year"]).reset_index(drop=True)
 
     dest = PROC_DIR / out_name
@@ -173,10 +305,10 @@ def process_category(
 def main():
     print("=== parse_ba.py ===\n")
 
-    print("KldB BHG 81–88 (Soziales, Bildung, Gesundheit) — Bund + Länder:")
+    print("KldB BHG 81–84 (Gesundheit, Soziales, Bildung) — Bund:")
     process_category("sozbe-kldb-blk",   CODE_COL_CANDIDATES, KLDB_PREFIXES, "kldb_blk.csv")
 
-    print("\nKldB BHG 81–88 — Kreise:")
+    print("\nKldB BHG 81–84 — Kreise:")
     process_category("sozbe-kldb-kreis", CODE_COL_CANDIDATES, KLDB_PREFIXES, "kldb_kreis.csv")
 
     print("\nWZ 85–88 (Bildung, Gesundheit, Sozialwesen) — Bund + Länder:")

@@ -19,5 +19,9 @@ pages/
 embed.py
 embeddings.json
 
+# BA raw downloads and parsed CSVs
+DE/data/raw/
+DE/data/processed/
+
 # macOS
 .DS_Store
