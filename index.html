@@ -153,6 +153,10 @@ body {
   color: var(--fg);
   border-color: rgba(255,255,255,0.15);
 }
+.view-toggle button:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
 
 .gradient-legend {
   display: flex;
@@ -1060,11 +1064,20 @@ const SECTOR_PREFIXES = {
 
 function filteredData() {
   let base = viewMode === "all" ? allData : allData.filter(d => d.category === viewMode);
-  if (sectorFilter !== "all") {
+  if (viewMode === "kldb" && sectorFilter !== "all") {
     const prefixes = SECTOR_PREFIXES[sectorFilter] || [];
     base = base.filter(d => prefixes.some(p => d.id.startsWith(p)));
   }
   return base;
+}
+
+function syncSectorToggleState() {
+  const disabled = viewMode !== "kldb";
+  if (disabled) sectorFilter = "all";
+  document.querySelectorAll("#sectorToggle button").forEach(b => {
+    b.disabled = disabled;
+    b.classList.toggle("active", b.dataset.sector === sectorFilter);
+  });
 }
 
 function layout() {
@@ -1500,6 +1513,7 @@ document.getElementById("viewToggle").addEventListener("click", e => {
   if (!btn) return;
   viewMode = btn.dataset.view;
   document.querySelectorAll("#viewToggle button").forEach(b => b.classList.toggle("active", b === btn));
+  syncSectorToggleState();
   layout();
   draw();
   updateStats();
@@ -1611,6 +1625,7 @@ async function init() {
   layout();
   draw();
   updateLegend();
+  syncSectorToggleState();
   updateStats();
 }
 
