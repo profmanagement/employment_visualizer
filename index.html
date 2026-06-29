@@ -451,7 +451,7 @@ canvas#canvas { display: block; cursor: default; }
     <p>
       Dieses Tool visualisiert Beschäftigungsdaten der
       <a href="https://statistik.arbeitsagentur.de/" target="_blank">Bundesagentur für Arbeit</a>
-      für <b>soziale Dienstleistungsberufe</b> (KldB 2010 Berufshauptgruppen 81 und 83)
+      für <b>Gesundheits-, Sozial- und Bildungsberufe</b> (KldB 2010 Berufshauptgruppen 81–84)
       sowie Wirtschaftszweige des Sozialwesens (WZ 2008 Abteilungen 87/88).
       Rechteckgröße = <b>SVB-Bestand</b> (sozialversicherungspflichtig Beschäftigte).
       <b>Farbe</b> zeigt die gewählte Metrik.
@@ -488,11 +488,10 @@ canvas#canvas { display: block; cursor: default; }
       <h3>Berufsbereich (KldB)</h3>
       <div class="view-toggle" id="sectorToggle">
         <button data-sector="all" class="active">Alle</button>
-        <button data-sector="soziales">Soziales (81)</button>
-        <button data-sector="bildung">Bildung (82)</button>
-        <button data-sector="pflege">Pflege (83)</button>
-        <button data-sector="therapie">Therapie (84)</button>
-        <button data-sector="medizin">Medizin (85–88)</button>
+        <button data-sector="medizin">Medizinisch (81)</button>
+        <button data-sector="pflege">Pflege & Körperpflege (82)</button>
+        <button data-sector="soziales">Soziales & Erziehung (83)</button>
+        <button data-sector="bildung">Bildung (84)</button>
       </div>
     </div>
     <div class="stat-section">
@@ -543,7 +542,7 @@ canvas#canvas { display: block; cursor: default; }
       <div class="kf-icon">📈</div>
       <div class="kf-stat">+35 %</div>
       <div class="kf-title">Beschäftigungswachstum 2013–2023</div>
-      <p class="kf-text">Soziale Dienstleistungsberufe (KldB 81/83) zählen zu den am stärksten wachsenden Berufsfeldern. Heilerziehungspflege (+45 %) und Kinderbetreuung (+38 %) führen das Wachstum an — getrieben durch Kita-Ausbau, Pflegereformen und demografischen Wandel.</p>
+      <p class="kf-text">Gesundheits-, Sozial- und Bildungsberufe (KldB 81–84) zählen zu den stark wachsenden Berufsfeldern. Der Zuwachs wird durch demografischen Wandel, Ausbau sozialer Infrastruktur und steigende Bildungs- und Pflegebedarfe getragen.</p>
       <svg class="kf-chart" viewBox="0 0 220 60" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
@@ -687,7 +686,7 @@ canvas#canvas { display: block; cursor: default; }
         <div class="meth-num">2</div>
         <div>
           <div class="meth-title">Parsen — <code>parse_ba.py</code></div>
-          <p>Die Excel-Dateien enthalten 5–7 Metadaten-Kopfzeilen. Das Parse-Skript (pandas) überspringt diese, normalisiert Spaltennamen (SVB gesamt, Frauen, Teilzeit, Geringfügig), filtert auf KldB-Berufshauptgruppen 81–88 und WZ-Abteilungen 85–88 und schreibt bereinigte CSVs für alle verfügbaren Jahrgänge (2013–heute, Stichtag 30. Juni).</p>
+          <p>Die aktuellen BA-Zeitreihen liegen als Excel-Dateien mit Quartalen in Zeilen und KldB-/WZ-Codes in Spalten vor. Das Parse-Skript (pandas) normalisiert SVB gesamt, Männer, Frauen und geringfügig Beschäftigte, filtert auf KldB-Berufshauptgruppen 81–84 und WZ-Abteilungen 85–88 und schreibt bereinigte CSVs für alle verfügbaren Jahrgänge (2013–heute, Stichtag 30. Juni).</p>
         </div>
       </div>
       <div class="meth-step">
@@ -710,14 +709,10 @@ canvas#canvas { display: block; cursor: default; }
       <div class="meth-codes-col">
         <div class="meth-codes-title">KldB 2010 — Berufshauptgruppen</div>
         <table>
-          <tr><td>81</td><td>Erziehung, soziale Arbeit, Heilerziehungspflege</td></tr>
-          <tr><td>82</td><td>Lehrende und Ausbildende</td></tr>
-          <tr><td>83</td><td>Gesundheits- u. Krankenpflege, Rettungsdienst</td></tr>
-          <tr><td>84</td><td>Therapie und Heilpraktik</td></tr>
-          <tr><td>85</td><td>Human- und Zahnmedizin, Tiermedizin</td></tr>
-          <tr><td>86</td><td>Psychologie, nichtärztl. Psychotherapie</td></tr>
-          <tr><td>87</td><td>Pharmazie</td></tr>
-          <tr><td>88</td><td>Medizintechnik, Orthoptik, Audiologie</td></tr>
+          <tr><td>81</td><td>Medizinische Gesundheitsberufe</td></tr>
+          <tr><td>82</td><td>Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe</td></tr>
+          <tr><td>83</td><td>Erziehung, soziale und hauswirtschaftliche Berufe, Theologie</td></tr>
+          <tr><td>84</td><td>Lehrende und ausbildende Berufe</td></tr>
         </table>
       </div>
       <div class="meth-codes-col">
@@ -1057,11 +1052,10 @@ const MARGIN = 12, GAP = 1.5;
 let sectorFilter = "all";
 
 const SECTOR_PREFIXES = {
-  soziales: ["81"],
-  bildung:  ["82"],
-  pflege:   ["83"],
-  therapie: ["84"],
-  medizin:  ["85", "86", "87", "88"],
+  medizin:  ["81"],
+  pflege:   ["82"],
+  soziales: ["83"],
+  bildung:  ["84"],
 };
 
 function filteredData() {
@@ -1528,64 +1522,19 @@ window.addEventListener("resize", () => { layout(); draw(); });
 function makeDemoData() {
   const D = "Demo-Daten. Echte Daten nach Ausführen der Scraper verfügbar.";
   return [
-    // KldB 81 – Soziales
-    { id: "811", label: "Kinderbetreuung", category: "kldb", svb: 420000, svb_year: 2023,
-      anteil_frauen: 0.96, anteil_teilzeit: 0.58, anteil_geringfuegig: 0.07,
-      wachstum_gesamt_pct: 38.2, cagr_pct: 3.1, exposure: 2, exposure_bls_title: "Childcare workers", exposure_rationale: D },
-    { id: "812", label: "Sozialarbeit, Sozialpäd.", category: "kldb", svb: 280000, svb_year: 2023,
-      anteil_frauen: 0.74, anteil_teilzeit: 0.44, anteil_geringfuegig: 0.05,
-      wachstum_gesamt_pct: 22.5, cagr_pct: 2.1, exposure: 4, exposure_bls_title: "Social workers", exposure_rationale: D },
-    { id: "813", label: "Heilerziehungspflege", category: "kldb", svb: 195000, svb_year: 2023,
-      anteil_frauen: 0.68, anteil_teilzeit: 0.41, anteil_geringfuegig: 0.04,
-      wachstum_gesamt_pct: 45.1, cagr_pct: 3.8, exposure: 5, exposure_bls_title: "Special education teachers", exposure_rationale: D },
-    // KldB 82 – Bildung
-    { id: "821", label: "Lehrtätigkeit allgemeinb.", category: "kldb", svb: 710000, svb_year: 2023,
-      anteil_frauen: 0.72, anteil_teilzeit: 0.39, anteil_geringfuegig: 0.02,
-      wachstum_gesamt_pct: 12.4, cagr_pct: 1.2, exposure: 7, exposure_bls_title: "High school teachers", exposure_rationale: D },
-    { id: "822", label: "Lehrtätigkeit berufsb.", category: "kldb", svb: 210000, svb_year: 2023,
-      anteil_frauen: 0.52, anteil_teilzeit: 0.31, anteil_geringfuegig: 0.02,
-      wachstum_gesamt_pct: 8.3, cagr_pct: 0.8, exposure: 6, exposure_bls_title: "Middle school teachers", exposure_rationale: D },
-    { id: "823", label: "Hochschullehre", category: "kldb", svb: 195000, svb_year: 2023,
-      anteil_frauen: 0.44, anteil_teilzeit: 0.35, anteil_geringfuegig: 0.04,
-      wachstum_gesamt_pct: 28.0, cagr_pct: 2.6, exposure: 7, exposure_bls_title: "Postsecondary teachers", exposure_rationale: D },
-    { id: "824", label: "Außerschulische Bildung", category: "kldb", svb: 120000, svb_year: 2023,
-      anteil_frauen: 0.67, anteil_teilzeit: 0.52, anteil_geringfuegig: 0.11,
-      wachstum_gesamt_pct: 18.0, cagr_pct: 1.7, exposure: 3, exposure_bls_title: "Preschool teachers", exposure_rationale: D },
-    // KldB 83 – Pflege
-    { id: "831", label: "Krankenpflege", category: "kldb", svb: 820000, svb_year: 2023,
-      anteil_frauen: 0.81, anteil_teilzeit: 0.49, anteil_geringfuegig: 0.03,
-      wachstum_gesamt_pct: 18.3, cagr_pct: 1.8, exposure: 4, exposure_bls_title: "Registered nurses", exposure_rationale: D },
-    { id: "832", label: "Rettungsdienst", category: "kldb", svb: 65000, svb_year: 2023,
-      anteil_frauen: 0.22, anteil_teilzeit: 0.28, anteil_geringfuegig: 0.06,
-      wachstum_gesamt_pct: 31.0, cagr_pct: 2.8, exposure: 3, exposure_bls_title: "EMTs and paramedics", exposure_rationale: D },
-    { id: "833", label: "Geburtshilfe", category: "kldb", svb: 24000, svb_year: 2023,
-      anteil_frauen: 0.98, anteil_teilzeit: 0.55, anteil_geringfuegig: 0.02,
-      wachstum_gesamt_pct: 10.2, cagr_pct: 1.0, exposure: 5, exposure_bls_title: "Nurse midwives", exposure_rationale: D },
-    // KldB 84 – Therapie
-    { id: "841", label: "Physiotherapie", category: "kldb", svb: 155000, svb_year: 2023,
-      anteil_frauen: 0.63, anteil_teilzeit: 0.46, anteil_geringfuegig: 0.08,
-      wachstum_gesamt_pct: 24.6, cagr_pct: 2.3, exposure: 3, exposure_bls_title: "Physical therapists", exposure_rationale: D },
-    { id: "842", label: "Ergotherapie", category: "kldb", svb: 55000, svb_year: 2023,
-      anteil_frauen: 0.78, anteil_teilzeit: 0.51, anteil_geringfuegig: 0.05,
-      wachstum_gesamt_pct: 20.0, cagr_pct: 1.9, exposure: 3, exposure_bls_title: "Occupational therapists", exposure_rationale: D },
-    { id: "843", label: "Logopädie", category: "kldb", svb: 35000, svb_year: 2023,
-      anteil_frauen: 0.88, anteil_teilzeit: 0.53, anteil_geringfuegig: 0.06,
-      wachstum_gesamt_pct: 22.0, cagr_pct: 2.1, exposure: 3, exposure_bls_title: "Speech-language pathologists", exposure_rationale: D },
-    // KldB 85 – Medizin
-    { id: "851", label: "Humanmedizin (Ärzt*innen)", category: "kldb", svb: 390000, svb_year: 2023,
-      anteil_frauen: 0.50, anteil_teilzeit: 0.22, anteil_geringfuegig: 0.01,
-      wachstum_gesamt_pct: 16.8, cagr_pct: 1.6, exposure: 5, exposure_bls_title: "Physicians and surgeons", exposure_rationale: D },
-    { id: "852", label: "Zahnmedizin", category: "kldb", svb: 72000, svb_year: 2023,
-      anteil_frauen: 0.55, anteil_teilzeit: 0.29, anteil_geringfuegig: 0.01,
-      wachstum_gesamt_pct: 9.5, cagr_pct: 0.9, exposure: 3, exposure_bls_title: "Dentists", exposure_rationale: D },
-    // KldB 86 – Psychologie
-    { id: "861", label: "Psychologie, Psychotherapie", category: "kldb", svb: 62000, svb_year: 2023,
-      anteil_frauen: 0.72, anteil_teilzeit: 0.38, anteil_geringfuegig: 0.03,
-      wachstum_gesamt_pct: 32.0, cagr_pct: 2.9, exposure: 6, exposure_bls_title: "Psychologists", exposure_rationale: D },
-    // KldB 87 – Pharmazie
-    { id: "871", label: "Pharmazie, Apotheke", category: "kldb", svb: 58000, svb_year: 2023,
-      anteil_frauen: 0.78, anteil_teilzeit: 0.41, anteil_geringfuegig: 0.04,
-      wachstum_gesamt_pct: 5.2, cagr_pct: 0.5, exposure: 5, exposure_bls_title: "Pharmacists", exposure_rationale: D },
+    // KldB 81–84 – aktuelle BA-Berufshauptgruppen
+    { id: "81", label: "Medizinische Gesundheitsberufe", category: "kldb", svb: 2923892, svb_year: 2025,
+      anteil_frauen: 0.80, anteil_teilzeit: null, anteil_geringfuegig: 0.10,
+      wachstum_gesamt_pct: 31.3, cagr_pct: 2.3, exposure: 4, exposure_bls_title: "Registered nurses", exposure_rationale: D },
+    { id: "82", label: "Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe", category: "kldb", svb: 978128, svb_year: 2025,
+      anteil_frauen: 0.77, anteil_teilzeit: null, anteil_geringfuegig: 0.14,
+      wachstum_gesamt_pct: 22.8, cagr_pct: 1.7, exposure: 2, exposure_bls_title: "Nursing assistants and orderlies", exposure_rationale: D },
+    { id: "83", label: "Erziehung, soziale und hauswirtschaftliche Berufe, Theologie", category: "kldb", svb: 2197486, svb_year: 2025,
+      anteil_frauen: 0.84, anteil_teilzeit: null, anteil_geringfuegig: 0.09,
+      wachstum_gesamt_pct: 55.6, cagr_pct: 3.8, exposure: 4, exposure_bls_title: "Social workers", exposure_rationale: D },
+    { id: "84", label: "Lehrende und ausbildende Berufe", category: "kldb", svb: 758681, svb_year: 2025,
+      anteil_frauen: 0.56, anteil_teilzeit: null, anteil_geringfuegig: 0.12,
+      wachstum_gesamt_pct: 33.2, cagr_pct: 2.4, exposure: 7, exposure_bls_title: "High school teachers", exposure_rationale: D },
     // WZ – Branchen
     { id: "85.1", label: "Kindergärten, Grundschulen (WZ 85.1)", category: "wz", svb: 650000, svb_year: 2023,
       anteil_frauen: 0.91, anteil_teilzeit: 0.55, anteil_geringfuegig: 0.06,
