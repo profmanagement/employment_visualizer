@@ -13,12 +13,12 @@ Analoges Gegenstück zur [US-Visualisierung](../site/index.html) (BLS-Daten).
 DE/
   README.md                  ← diese Datei
   sozialwesen_plan.md        ← ursprünglicher Planungsdokument
-  scrape_ba.py               ← Schritt 1: Playwright-Download der BA-Excel-Dateien
+  scrape_ba.py               ← Schritt 1: Download der BA-Excel-Zeitreihen
   parse_ba.py                ← Schritt 2: Excel → bereinigte CSVs
   build_site_data.py         ← Schritt 3: CSVs + AI-Scores → site/data.json
   site/
     index.html               ← Schritt 4: Treemap-Visualisierung (Browser öffnen)
-    data.json                ← generiert (nicht im Git)
+    data.json                ← generiert
   data/
     raw/                     ← Original-Downloads (nicht im Git)
       sozbe-kldb-blk/        ← SVB nach KldB 2010, Bund + Länder
@@ -26,10 +26,10 @@ DE/
       sozbe-wz-blk/          ← SVB nach WZ 2008, Bund + Länder
       sozbe-wz-kreis/        ← SVB nach WZ 2008, Kreise
     processed/               ← generiert (nicht im Git)
-      kldb_blk.csv           ← BHG 81, 83 — Bund + Länder, alle Jahre
-      kldb_kreis.csv         ← BHG 81, 83 — Kreise, alle Jahre
-      wz_blk.csv             ← WZ 87, 88 — Bund + Länder, alle Jahre
-      wz_kreis.csv           ← WZ 87, 88 — Kreise, alle Jahre
+      kldb_blk.csv           ← BHG 81–84 — Bund, alle Jahre
+      kldb_kreis.csv         ← BHG 81–84 — Kreise, falls verfügbar
+      wz_blk.csv             ← WZ 85–88/Q — Bund, alle Jahre
+      wz_kreis.csv           ← WZ 85–88/Q — Kreise, falls verfügbar
 ```
 
 ---
@@ -41,7 +41,6 @@ DE/
 ```bash
 # Im Wurzelverzeichnis des Projekts:
 uv sync                          # Python-Abhängigkeiten (pandas, httpx, playwright …)
-playwright install chromium      # Browser für Schritt 1
 ```
 
 ### Schritt 1 – Raw-Daten herunterladen
@@ -50,8 +49,8 @@ playwright install chromium      # Browser für Schritt 1
 uv run python DE/scrape_ba.py
 ```
 
-Navigiert `statistik.arbeitsagentur.de` mit Playwright, akzeptiert den Cookie-Banner
-und lädt alle `.xlsx`-Dateien für die vier Kategorien in `DE/data/raw/` herunter.
+Lädt die aktuellen `.xlsx`-Zeitreihen der BA für KldB 2010 und WZ 2008 in
+`DE/data/raw/` herunter.
 
 **Fallback (manueller Download):** Falls der Scraper keine Links findet
 (die BA ändert gelegentlich ihre URL-Struktur), die Dateien manuell von
@@ -72,7 +71,7 @@ uv run python DE/parse_ba.py
 ```
 
 Liest alle `.xlsx`-Dateien aus `DE/data/raw/`, filtert auf die relevanten Codes
-(KldB 81/83, WZ 87/88) und schreibt normalisierte CSVs nach `DE/data/processed/`.
+(KldB 81–84, WZ 85–88/Q) und schreibt normalisierte CSVs nach `DE/data/processed/`.
 
 **Häufiges Problem:** BA-Excel-Dateien variieren im Tabellenaufbau je nach Jahrgang.
 Falls die Ausgabe „Keine passenden Zeilen gefunden" zeigt, in `parse_ba.py`
@@ -110,23 +109,20 @@ open DE/site/index.html      # macOS
 
 | Code | Bezeichnung |
 |---|---|
-| 81 | Erziehung, soziale Arbeit, Heilerziehungspflege |
-| 811 | Kinderbetreuung und -erziehung |
-| 812 | Sozialarbeit, Sozialpädagogik |
-| 813 | Heilerziehungspflege, Sonderpädagogik |
-| 83 | Gesundheits- u. Krankenpflege, Rettungsdienst, Geburtshilfe |
-| 831 | Gesundheits- und Krankenpflege |
-| 832 | Rettungsdienst |
-| 833 | Geburtshilfe (Hebammen) |
+| 81 | Medizinische Gesundheitsberufe |
+| 82 | Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe |
+| 83 | Erziehung, soziale und hauswirtschaftliche Berufe, Theologie |
+| 84 | Lehrende und ausbildende Berufe |
 
 **WZ 2008 – Wirtschaftsabteilungen:**
 
 | Code | Bezeichnung |
 |---|---|
+| 85 | Erziehung und Unterricht |
+| 86 | Gesundheitswesen |
 | 87 | Heime (ohne Erholungs- und Ferienheime) |
 | 88 | Sozialwesen ohne Unterkunft |
-| 88.1 | Soziale Betreuung älterer Menschen und Behinderter |
-| 88.9 | Sonstiges Sozialwesen |
+| Q | Gesundheits- und Sozialwesen gesamt |
 
 ---
 
@@ -136,8 +132,8 @@ open DE/site/index.html      # macOS
 
 | Modus | Beschreibung |
 |---|---|
-| **KldB (Berufe)** | Zeigt nur KldB-Berufshauptgruppen 81 und 83 |
-| **WZ (Branchen)** | Zeigt nur WZ-Wirtschaftsabteilungen 87 und 88 |
+| **KldB (Berufe)** | Zeigt KldB-Berufshauptgruppen 81–84 |
+| **WZ (Branchen)** | Zeigt WZ-Wirtschaftsabteilungen 85–88 plus Abschnitt Q |
 | **Gesamt** | KldB und WZ gemeinsam |
 
 ### Farbmodi
@@ -180,12 +176,10 @@ via LLM auf deutsche Berufsgruppen übertragen. Skala 0–10:
 
 | KldB | BLS-Occupation | Score |
 |---|---|---|
-| 811 Kinderbetreuung | Childcare workers | 2 |
-| 812 Sozialarbeit | Social workers | 4 |
-| 813 Heilerziehungspflege | Special education teachers | 5 |
-| 831 Krankenpflege | Registered nurses | 4 |
-| 832 Rettungsdienst | EMTs and paramedics | 3 |
-| 833 Geburtshilfe | Nurse midwives | 5 |
+| 81 Medizinische Gesundheitsberufe | Registered nurses | 4 |
+| 82 Nichtmedizinische Gesundheits-, Körperpflege- und Wellnessberufe | Nursing assistants and orderlies | 2 |
+| 83 Erziehung, soziale und hauswirtschaftliche Berufe, Theologie | Social workers | 4 |
+| 84 Lehrende und ausbildende Berufe | High school teachers | 7 |
 
 **Caveat:** Die Scores sind grobe LLM-Schätzungen, keine wissenschaftlichen Prognosen.
 Ein hoher Score bedeutet nicht, dass der Beruf verschwindet — er beschreibt
@@ -199,14 +193,14 @@ das Ausmaß, in dem KI die Arbeit verändern wird.
 |---|---|
 | 2026-04-09 | Planungsdokument `sozialwesen_plan.md` erstellt; BA-Portal-Struktur und Cookie-Wall analysiert; Playwright als Download-Strategie gewählt; Scope festgelegt (KldB 81/83, WZ 87/88, Bundesebene + Länder + Kreise, Zeitreihe ab 2013) |
 | 2026-04-09 | Implementierung: `scrape_ba.py`, `parse_ba.py`, `build_site_data.py`, `site/index.html`; KI-Scores von BLS adaptiert; Demo-Modus in Visualisierung integriert |
+| 2026-06-29 | Umstellung auf aktuelle BA-Zeitreihen; KldB-Kategorien auf Berufshauptgruppen 81–84 korrigiert |
 
 ---
 
 ## Bekannte Einschränkungen
 
-- **BA-Cookie-Wall:** Direkter HTTPS-Zugriff auf Excel-Dateien liefert HTTP 404.
-  Der Scraper nutzt Playwright mit echtem Browser-Kontext. Falls Links nicht gefunden
-  werden, manuellen Download als Fallback nutzen.
+- **BA-URL-Struktur:** Die BA ändert gelegentlich Themen- und Download-URLs.
+  Falls Links nicht gefunden werden, manuellen Download als Fallback nutzen.
 - **Header-Variabilität:** BA-Excel-Dateien haben je nach Jahrgang unterschiedlich
   viele Kopfzeilen. Der Parser probiert automatisch mehrere Varianten; bei Problemen
   `HEADER_ROW` in `parse_ba.py` manuell setzen.
@@ -215,7 +209,7 @@ das Ausmaß, in dem KI die Arbeit verändern wird.
   fehlen dann in der Analyse.
 - **6-Monats-Wartezeit:** BA-Beschäftigungsdaten erscheinen mit ca. 6 Monaten
   Verzögerung. Aktuellste stabile Daten sind typischerweise vom 30. Juni des Vorjahres.
-- **KldB vs. WZ:** Beide Ansätze messen unterschiedliches. KldB = was die Person
+- **KldB vs. WZ:** Beide Ansätze messen Unterschiedliches. KldB = was die Person
   beruflich tut; WZ = in welcher Branche sie arbeitet. Für „soziale Dienstleistungen"
-  ist KldB 81/83 der direktere Ansatz; WZ 88 erfasst auch Verwaltungspersonal
-  von Sozialträgern.
+  sind die KldB-Berufshauptgruppen 81–84 der berufsbezogene Ansatz; WZ 85–88/Q
+  erfasst die Branchen Bildung, Gesundheit, Heime und Sozialwesen.
